@@ -1,6 +1,6 @@
 ---
 
-Die App **Ausflugsziele (ODTA: Tourist Attraction)** macht die touristischen Orte der Ostschweiz entdeckbar:
+Die App **Ausflugsziele (ODTA – Tourist Attraction)** macht die touristischen Orte der Ostschweiz entdeckbar:
 Sehenswürdigkeiten, historische Gebäude, Naturattraktionen wie der Rheinfall, Berge, Gewässer und Touren
 werden auf einer interaktiven Karte, in einer filterbaren Liste und in einer Detailansicht präsentiert.
 Jeder Ort lässt sich zusätzlich als ODTA-konformer JSON-LD-Datensatz anzeigen, kopieren oder herunterladen.

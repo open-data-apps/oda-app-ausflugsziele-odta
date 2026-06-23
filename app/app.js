@@ -1,5 +1,5 @@
 /*
- * Ausflugsziele (ODTA: Tourist Attraction) – App-Logik
+ * Ausflugsziele (ODTA – Tourist Attraction) – App-Logik
  *
  * Funktion: app(configdata, enclosingHtmlDivElement)
  *  - Laedt Places.json (schema.org-konform) der OpenData Ostschweiz Tourismus

@@ -1,6 +1,6 @@
 # Changelog
 
-## 22.06.2026 (Version 1.0.0 – Ausflugsziele (ODTA: Tourist Attraction))
+## 22.06.2026 (Version 1.0.0 – Ausflugsziele (ODTA – Tourist Attraction))
 
 - ENH: App auf Datenquelle OpenData Ostschweiz Tourismus (Place.json, schema.org-konform, CC0/CC-BY/CC-BY-SA) umgestellt
 - ENH: KPI-Kacheln (Gesamte Orte, Ortstypen, Lizenzen, Sprachen)

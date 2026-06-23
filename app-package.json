@@ -2,14 +2,14 @@
   "app-entwickler-id": "12343",
   "app-entwickler-name": "ondics-gmbh",
   "name-in-url": "ausflugsziele",
-  "name": "Ausflugsziele (ODTA: Tourist Attraction)",
+  "name": "Ausflugsziele (ODTA – Tourist Attraction)",
   "version": "1.0.0",
   "odas-app-icon": "assets/odas-app-icon.svg",
   "app-icon": "assets/odas-app-icon.svg",
   "kurzbeschreibung": "Ausflugsziele-App mit Karte, Filter, Detailansicht und ODTA-konformem JSON-LD-Export auf Basis der Open-Data-Quelle Ostschweiz Tourismus.",
   "beschreibung": [
     "_multiline_",
-    "Die App „Ausflugsziele (ODTA: Tourist Attraction)“ macht die touristischen Orte der Ostschweiz entdeckbar: ",
+    "Die App „Ausflugsziele (ODTA – Tourist Attraction)“ macht die touristischen Orte der Ostschweiz entdeckbar: ",
     "Sehenswürdigkeiten, historische Gebäude, Naturattraktionen wie der Rheinfall, Berge, Gewässer und Touren ",
     "werden auf einer interaktiven Karte, in einer filterbaren Liste und in einer Detailansicht präsentiert. ",
     "Jeder Ort lässt sich zusätzlich als ODTA-konformer JSON-LD-Datensatz anzeigen, kopieren oder herunterladen.",
@@ -70,7 +70,7 @@
     "seitentitel": {
       "label": "Seitentitel",
       "hilfe": "Der Seitentitel wird im Browser-Tab der App angezeigt",
-      "default": "Ausflugsziele (ODTA: Tourist Attraction)",
+      "default": "Ausflugsziele (ODTA – Tourist Attraction)",
       "format": {
         "typ": "string",
         "laenge": 50
@@ -90,7 +90,7 @@
     "titel": {
       "label": "Titel",
       "hilfe": "Der Titel wird in der Titelzeile der App angezeigt",
-      "default": "Ausflugsziele (ODTA: Tourist Attraction)",
+      "default": "Ausflugsziele (ODTA – Tourist Attraction)",
       "format": {
         "typ": "string",
         "laenge": 50
@@ -132,7 +132,7 @@
       },
       "default": [
         "_multiline_",
-        "Die App „Ausflugsziele (ODTA: Tourist Attraction)“ macht die touristischen Orte der Ostschweiz entdeckbar: ",
+        "Die App „Ausflugsziele (ODTA – Tourist Attraction)“ macht die touristischen Orte der Ostschweiz entdeckbar: ",
         "Sehenswürdigkeiten, historische Gebäude, Naturattraktionen wie der Rheinfall, Berge, Gewässer und Touren ",
         "werden auf einer interaktiven Karte, in einer filterbaren Liste und in einer Detailansicht präsentiert. ",
         "Jeder Ort lässt sich zusätzlich als ODTA-konformer JSON-LD-Datensatz anzeigen, kopieren oder herunterladen.",
