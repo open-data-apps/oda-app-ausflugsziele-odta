@@ -797,7 +797,7 @@ function renderSchale4Blocks(configdata) {
 
   const methodik = String(configdata.datenquelleHinweis || "").trim();
   const datenStandText = String(configdata.datenStand || "").trim();
-  const links = String(configdata.verwandteLinks || "").trim();
+  const links = String(configdata.weiterfuehrendeLinks || configdata.verwandteLinks || "").trim();
   const freshness = APP_STATE.latestDate
     ? new Date(APP_STATE.latestDate).toLocaleDateString("de-DE")
     : "";
