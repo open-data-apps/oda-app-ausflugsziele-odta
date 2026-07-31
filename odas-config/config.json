@@ -45,7 +45,6 @@
   "standardSprache": "de",
   "proxyAktiv": "nein",
   "sprache": "de",
-  "lizenz": "Open Software License (OSL)",
   "kpiKontext1": "Anzahl der aktuell angezeigten Orte im Verhältnis zu allen verfügbaren Orten im Datenbestand. Über die Filter lässt sich die Auswahl gezielt eingrenzen.",
   "kpiKontext2": "Anzahl unterschiedlicher Ortstypen (z. B. Wasserfall, historisches Gebäude, Berg) in der aktuellen Auswahl. Eine höhere Anzahl bedeutet eine vielfältigere Auswahl an Sehenswürdigkeiten.",
   "kpiKontext3": "Anzahl unterschiedlicher Datenlizenzen in der aktuellen Auswahl. Die meisten Datensätze stehen unter CC0 (Public Domain) und können frei verwendet werden.",

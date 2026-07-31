@@ -3,7 +3,7 @@
   "app-entwickler-name": "ondics-gmbh",
   "name-in-url": "ausflugsziele",
   "name": "Ausflugsziele-ODTA-Tourist-Attraction",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "odas-app-icon": "assets/odas-app-icon.svg",
   "app-icon": "assets/odas-app-icon.svg",
   "kurzbeschreibung": "Ausflugsziele-App mit Karte, Filter, Detailansicht und ODTA-konformem JSON-LD-Export auf Basis der Open-Data-Quelle Ostschweiz Tourismus.",
@@ -56,16 +56,6 @@
       "label": "Seitentitel",
       "hilfe": "Der Seitentitel wird im Browser-Tab der App angezeigt",
       "default": "Ausflugsziele (ODTA – Tourist Attraction)",
-      "format": {
-        "typ": "string",
-        "laenge": 50
-      },
-      "erforderlich": "ja"
-    },
-    "lizenz": {
-      "label": "Lizenz",
-      "hilfe": "Angabe der Lizenz, die für die Nutzung der App gilt.",
-      "default": "Open Software License (OSL)",
       "format": {
         "typ": "string",
         "laenge": 50
@@ -200,6 +190,7 @@
     "standardSprache": {
       "label": "Anzeigesprache für mehrsprachige Felder",
       "hilfe": "Sprache, die für mehrsprachige Felder (Name, Beschreibung) bevorzugt angezeigt wird, falls verfügbar.",
+      "default": "de",
       "format": {
         "typ": "dropdown",
         "optionen": [
@@ -207,8 +198,7 @@
           "en",
           "fr",
           "it"
-        ],
-        "default": "de"
+        ]
       },
       "default": "de",
       "erforderlich": "ja"
@@ -216,13 +206,13 @@
     "proxyAktiv": {
       "label": "ODAS-Proxy aktivieren",
       "hilfe": "Aktiviert Datenabrufe ueber den ODAS-Proxy. Die Ostschweiz-Quelle erlaubt CORS und kann direkt abgerufen werden ('nein'). Echte Proxy-Aufrufe funktionieren nur im ODAS-Live-System.",
+      "default": "nein",
       "format": {
         "typ": "dropdown",
         "optionen": [
           "nein",
           "ja"
-        ],
-        "default": "nein"
+        ]
       },
       "default": "nein",
       "erforderlich": "ja"
@@ -230,12 +220,12 @@
     "sprache": {
       "label": "Sprache der App",
       "hilfe": "Angabe der App-Sprache",
+      "default": "de",
       "format": {
         "typ": "dropdown",
         "optionen": [
           "de"
-        ],
-        "default": "de"
+        ]
       },
       "default": "de",
       "erforderlich": "ja"
@@ -337,6 +327,26 @@
         "typ": "markdown"
       },
       "default": "<ul><li><a href=\"https://opendata.ost.contentdesk.io\" target=\"_blank\" rel=\"noopener\">OpenData Ostschweiz Tourismus</a></li><li><a href=\"https://opendata.ost.contentdesk.io/api/Place.json\" target=\"_blank\" rel=\"noopener\">Place.json API</a></li><li><a href=\"https://schema.org/Place\" target=\"_blank\" rel=\"noopener\">schema.org Place</a></li></ul>",
+      "erforderlich": "nein"
+    },
+    "brandingCSS": {
+      "label": "Zusätzliches Branding-CSS",
+      "hilfe": "Optionaler CSS-Code für die konkrete App-Instanz.",
+      "default": "",
+      "format": {
+        "typ": "string",
+        "laenge": 10000
+      },
+      "erforderlich": "nein"
+    },
+    "brandingCSSFile": {
+      "label": "Branding-CSS-Datei",
+      "hilfe": "Optionale URL zu einer zusätzlichen CSS-Datei für die konkrete App-Instanz.",
+      "default": "",
+      "format": {
+        "typ": "url",
+        "laenge": 500
+      },
       "erforderlich": "nein"
     }
   }
