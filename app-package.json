@@ -3,7 +3,7 @@
   "app-entwickler-name": "ondics-gmbh",
   "name-in-url": "ausflugsziele",
   "name": "Ausflugsziele-ODTA-Tourist-Attraction",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "odas-app-icon": "assets/odas-app-icon.svg",
   "app-icon": "assets/odas-app-icon.svg",
   "kurzbeschreibung": "Ausflugsziele-App mit Karte, Filter, Detailansicht und ODTA-konformem JSON-LD-Export auf Basis der Open-Data-Quelle Ostschweiz Tourismus.",
@@ -153,7 +153,7 @@
       "default": [
         "_multiline_",
         "Alle Daten sind geschützt.",
-        "<h3>Beim Aufruf kontaktierte Drittanbieter</h3><p>Beim Aufruf dieser App werden Bibliotheken bzw. Kartendienste von folgenden externen Servern geladen. Dabei werden IP-Adresse und User-Agent der Besucher:innen an diese Anbieter übertragen:</p><ul><li><strong>cdn.jsdelivr.net</strong> — Bootstrap (Layout- und UI-Framework), Leaflet (Kartendarstellung)</li><li><strong>tile.openstreetmap.org</strong> — Kartenkacheln (OpenStreetMap)</li></ul>"
+        "<h3>Beim Aufruf kontaktierte Drittanbieter</h3><p>Beim Aufruf dieser App werden Bibliotheken bzw. Kartendienste von folgenden externen Servern geladen. Dabei werden IP-Adresse und User-Agent der Besucher:innen an diese Anbieter übertragen:</p><ul><li><strong>tile.openstreetmap.org</strong> — Kartenkacheln (OpenStreetMap)</li></ul>"
       ],
       "erforderlich": "ja"
     },
