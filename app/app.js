@@ -442,16 +442,16 @@ function loadLeaflet() {
   leafletLoading = new Promise((resolve, reject) => {
     const link = document.createElement("link");
     link.rel = "stylesheet";
-    link.href = "https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css";
+    link.href = "vendor/leaflet/leaflet.css";
     document.head.appendChild(link);
     const script = document.createElement("script");
-    script.src = "https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js";
+    script.src = "vendor/leaflet/leaflet.js";
     script.onload = () => {
       delete L.Icon.Default.prototype._getIconUrl;
       L.Icon.Default.mergeOptions({
-        iconRetinaUrl: "https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-        iconUrl: "https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/images/marker-icon.png",
-        shadowUrl: "https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/images/marker-shadow.png",
+        iconRetinaUrl: "vendor/leaflet/images/marker-icon-2x.png",
+        iconUrl: "vendor/leaflet/images/marker-icon.png",
+        shadowUrl: "vendor/leaflet/images/marker-shadow.png",
       });
       resolve();
     };
