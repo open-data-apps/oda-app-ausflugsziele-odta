@@ -53,6 +53,7 @@ const ODAS_PUBLISHER = {
 const SOURCE_BASE = "https://opendata.ost.contentdesk.io/api/Place.json";
 
 function app(configdata = {}, enclosingHtmlDivElement) {
+  odaRoot = enclosingHtmlDivElement;
   if (APP_STATE.map) {
     try { APP_STATE.map.remove(); } catch (e) {}
     APP_STATE.map = null;
@@ -129,7 +130,7 @@ async function loadData(configdata) {
   const apiUrl = String(configdata.apiurl || "").trim();
 
   if (APP_STATE.allPois.length > 0) {
-    document.getElementById("oda-loading").style.display = "none";
+    odaRoot.querySelector("#oda-loading").style.display = "none";
     return;
   }
 
@@ -148,7 +149,7 @@ async function loadData(configdata) {
   }
 
   APP_STATE.allPois = Array.isArray(parsed) ? parsed : [];
-  document.getElementById("oda-loading").style.display = "none";
+  odaRoot.querySelector("#oda-loading").style.display = "none";
 
   if (APP_STATE.allPois.length === 0) {
     showError("Es wurden keine Orte in den Daten gefunden.");
@@ -188,9 +189,9 @@ function computeAvailableFacets() {
 }
 
 function renderFilterOptions() {
-  const typeSel = document.getElementById("oda-filter-type");
-  const langSel = document.getElementById("oda-filter-language");
-  const licSel = document.getElementById("oda-filter-license");
+  const typeSel = odaRoot.querySelector("#oda-filter-type");
+  const langSel = odaRoot.querySelector("#oda-filter-language");
+  const licSel = odaRoot.querySelector("#oda-filter-license");
 
   typeSel.innerHTML =
     `<option value="">Alle</option>` +
@@ -206,39 +207,39 @@ function renderFilterOptions() {
 }
 
 function bindFilterControls() {
-  document.getElementById("oda-search").addEventListener("input", (e) => {
+  odaRoot.querySelector("#oda-search").addEventListener("input", (e) => {
     APP_STATE.filters.search = e.target.value.trim().toLowerCase();
     APP_STATE.page = 0;
     applyFilters();
   });
-  document.getElementById("oda-filter-type").addEventListener("change", (e) => {
+  odaRoot.querySelector("#oda-filter-type").addEventListener("change", (e) => {
     APP_STATE.filters.type = e.target.value;
     APP_STATE.page = 0;
     applyFilters();
   });
-  document.getElementById("oda-filter-language").addEventListener("change", (e) => {
+  odaRoot.querySelector("#oda-filter-language").addEventListener("change", (e) => {
     APP_STATE.filters.language = e.target.value;
     APP_STATE.page = 0;
     applyFilters();
   });
-  document.getElementById("oda-filter-license").addEventListener("change", (e) => {
+  odaRoot.querySelector("#oda-filter-license").addEventListener("change", (e) => {
     APP_STATE.filters.license = e.target.value;
     APP_STATE.page = 0;
     applyFilters();
   });
-  document.getElementById("oda-filter-reset").addEventListener("click", () => {
+  odaRoot.querySelector("#oda-filter-reset").addEventListener("click", () => {
     APP_STATE.filters = { search: "", type: "", language: "", license: "" };
-    document.getElementById("oda-search").value = "";
-    document.getElementById("oda-filter-type").value = "";
-    document.getElementById("oda-filter-language").value = "";
-    document.getElementById("oda-filter-license").value = "";
+    odaRoot.querySelector("#oda-search").value = "";
+    odaRoot.querySelector("#oda-filter-type").value = "";
+    odaRoot.querySelector("#oda-filter-language").value = "";
+    odaRoot.querySelector("#oda-filter-license").value = "";
     APP_STATE.page = 0;
     applyFilters();
   });
 }
 
 function bindListControls() {
-  document.getElementById("oda-pager").addEventListener("click", (e) => {
+  odaRoot.querySelector("#oda-pager").addEventListener("click", (e) => {
     const btn = e.target.closest("[data-page]");
     if (!btn) return;
     APP_STATE.page = Number(btn.getAttribute("data-page"));
@@ -275,7 +276,7 @@ function applyFilters() {
   renderKpis();
   renderList();
   renderMap();
-  document.getElementById("oda-filter-count").textContent = `${APP_STATE.filteredPois.length} von ${APP_STATE.allPois.length} Orten`;
+  odaRoot.querySelector("#oda-filter-count").textContent = `${APP_STATE.filteredPois.length} von ${APP_STATE.allPois.length} Orten`;
 }
 
 function collectLangs(p) {
@@ -303,7 +304,7 @@ function renderKpis() {
     { id: 4, label: "Sprachen", value: langs.size, total: APP_STATE.availableLanguages.length, ctx: String(cd.kpiKontext4 || "").trim() },
   ];
 
-  document.getElementById("oda-kpi").innerHTML = tiles
+  odaRoot.querySelector("#oda-kpi").innerHTML = tiles
     .map(
       (t) => `
       <div class="oda-kpi-card">
@@ -316,8 +317,8 @@ function renderKpis() {
 }
 
 function renderList() {
-  const list = document.getElementById("oda-list");
-  const pager = document.getElementById("oda-pager");
+  const list = odaRoot.querySelector("#oda-list");
+  const pager = odaRoot.querySelector("#oda-pager");
   const pois = APP_STATE.filteredPois;
   const start = APP_STATE.page * APP_STATE.pageSize;
   const slice = pois.slice(start, start + APP_STATE.pageSize);
@@ -395,7 +396,7 @@ function localizedText(value, lang) {
 function renderMap() {
   loadLeaflet()
     .then(() => {
-      const el = document.getElementById("oda-map");
+      const el = odaRoot.querySelector("#oda-map");
       if (!el) return;
       if (!APP_STATE.map) {
         APP_STATE.map = L.map(el, { scrollWheelZoom: true }).setView([47.37, 9.0], 8);
@@ -429,12 +430,14 @@ function renderMap() {
       setTimeout(() => APP_STATE.map.invalidateSize(), 100);
     })
     .catch((err) => {
-      const el = document.getElementById("oda-map");
+      const el = odaRoot.querySelector("#oda-map");
       if (el)
         el.innerHTML = `<div class="alert alert-warning">Karte konnte nicht geladen werden: ${escapeHtml(err.message)}</div>`;
     });
 }
 
+// App-Container (in app() gesetzt); alle DOM-Zugriffe laufen über ihn (F-25)
+let odaRoot = null;
 let leafletLoading = null;
 function loadLeaflet() {
   if (window.L) return Promise.resolve();
@@ -462,7 +465,7 @@ function loadLeaflet() {
 }
 
 function toggleDetail(poiId) {
-  const wrap = document.querySelector(`.oda-list-item-wrap[data-poi-id="${cssEscape(poiId)}"]`);
+  const wrap = odaRoot.querySelector(`.oda-list-item-wrap[data-poi-id="${cssEscape(poiId)}"]`);
   if (!wrap) return;
   const detail = wrap.querySelector(".oda-list-detail");
   const chevron = wrap.querySelector(".oda-list-chevron");
@@ -485,7 +488,7 @@ function toggleDetail(poiId) {
 }
 
 function scrollToPoi(poiId) {
-  const wrap = document.querySelector(`.oda-list-item-wrap[data-poi-id="${cssEscape(poiId)}"]`);
+  const wrap = odaRoot.querySelector(`.oda-list-item-wrap[data-poi-id="${cssEscape(poiId)}"]`);
   if (!wrap) return;
   wrap.scrollIntoView({ behavior: "smooth", block: "center" });
   const detail = wrap.querySelector(".oda-list-detail");
@@ -659,7 +662,7 @@ function typeIconSvg(type) {
 }
 
 function bindDetailControls(p) {
-  const accordion = document.getElementById("oda-jsonld-accordion");
+  const accordion = odaRoot.querySelector("#oda-jsonld-accordion");
   const codeEl = accordion ? accordion.querySelector("code") : null;
   if (accordion && codeEl) {
     accordion.addEventListener("toggle", () => {
@@ -669,7 +672,7 @@ function bindDetailControls(p) {
     });
   }
 
-  const copy = document.getElementById("oda-jsonld-copy");
+  const copy = odaRoot.querySelector("#oda-jsonld-copy");
   if (copy) {
     copy.addEventListener("click", async () => {
       try {
@@ -688,7 +691,7 @@ function bindDetailControls(p) {
       }
     });
   }
-  const dl = document.getElementById("oda-jsonld-download");
+  const dl = odaRoot.querySelector("#oda-jsonld-download");
   if (dl) {
     dl.addEventListener("click", () => {
       const blob = new Blob([JSON.stringify(toOdtaJsonLd(p), null, 2)], { type: "application/ld+json" });
@@ -792,8 +795,8 @@ function toOdtaJsonLd(p) {
 }
 
 function renderSchale4Blocks(configdata) {
-  const top = document.getElementById("oda-schale4-top");
-  const bottom = document.getElementById("oda-schale4-bottom");
+  const top = odaRoot.querySelector("#oda-schale4-top");
+  const bottom = odaRoot.querySelector("#oda-schale4-bottom");
 
   const methodik = String(configdata.datenquelleHinweis || "").trim();
   const datenStandText = String(configdata.datenStand || "").trim();
@@ -819,7 +822,7 @@ function renderSchale4Blocks(configdata) {
 }
 
 function showError(msg) {
-  const el = document.getElementById("oda-loading");
+  const el = odaRoot.querySelector("#oda-loading");
   if (el) el.innerHTML = `<div class="oda-error-box">${escapeHtml(msg)}</div>`;
 }
 
