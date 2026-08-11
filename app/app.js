@@ -16,26 +16,9 @@
  *   additionalProperty, openingHours/Specification, copyrightHolder
  */
 
-const APP_STATE = {
-  allPois: [],
-  filteredPois: [],
-  activeLang: "de",
-  filters: {
-    search: "",
-    type: "",
-    language: "",
-    license: "",
-  },
-  map: null,
-  markerLayer: null,
-  page: 0,
-  pageSize: 10,
-  detailPoiId: null,
-  availableTypes: [],
-  availableLicenses: [],
-  availableLanguages: [],
-  latestDate: null,
-};
+// F-42: Monotoner Instanzzähler; der eigentliche Zustand liegt pro Instanz im
+// von app() erzeugten state-Objekt (kein Modul-Global mehr).
+let appInstanzZaehler = 0;
 
 const LICENSE_URLS = {
   CC0: "https://creativecommons.org/publicdomain/zero/1.0/",
@@ -53,32 +36,47 @@ const ODAS_PUBLISHER = {
 const SOURCE_BASE = "https://opendata.ost.contentdesk.io/api/Place.json";
 
 function app(configdata = {}, enclosingHtmlDivElement) {
-  odaRoot = enclosingHtmlDivElement;
-  if (APP_STATE.map) {
-    try { APP_STATE.map.remove(); } catch (e) {}
-    APP_STATE.map = null;
-    APP_STATE.markerLayer = null;
-  }
-  APP_STATE.page = 0;
+  // F-42: pro Instanz geschlossener State (Closure in app())
+  const state = {
+    uid: "i" + ++appInstanzZaehler,
+    root: enclosingHtmlDivElement,
+    config: configdata,
+    disposed: false, // wird in Task 9 (onPageLeave) gesetzt
+    allPois: [],
+    filteredPois: [],
+    activeLang: pickLang(["de", "en", "fr", "it"], configdata.standardSprache),
+    filters: {
+      search: "",
+      type: "",
+      language: "",
+      license: "",
+    },
+    map: null,
+    markerLayer: null,
+    page: 0,
+    pageSize: 10,
+    detailPoiId: null,
+    availableTypes: [],
+    availableLicenses: [],
+    availableLanguages: [],
+    latestDate: null,
+  };
 
-  window.__odaConfigdata = configdata;
-  APP_STATE.activeLang = pickLang(["de", "en", "fr", "it"], configdata.standardSprache);
+  state.root.innerHTML = renderShell();
 
-  enclosingHtmlDivElement.innerHTML = renderShell();
+  bindFilterControls(state);
+  bindListControls(state);
 
-  bindFilterControls();
-  bindListControls();
-
-  loadData(configdata)
+  loadData(state)
     .then(() => {
-      computeAvailableFacets();
-      renderFilterOptions();
-      applyFilters();
-      renderSchale4Blocks(configdata);
+      computeAvailableFacets(state);
+      renderFilterOptions(state);
+      applyFilters(state);
+      renderSchale4Blocks(state);
     })
     .catch((err) => {
       console.error("Daten konnten nicht geladen werden:", err);
-      showError("Daten konnten nicht geladen werden: " + (err && err.message ? err.message : err));
+      showError(state, "Daten konnten nicht geladen werden: " + (err && err.message ? err.message : err));
     });
 }
 
@@ -126,37 +124,37 @@ function renderShell() {
   `;
 }
 
-async function loadData(configdata) {
-  const apiUrl = String(configdata.apiurl || "").trim();
+async function loadData(state) {
+  const apiUrl = String(state.config.apiurl || "").trim();
 
-  if (APP_STATE.allPois.length > 0) {
-    odaRoot.querySelector("#oda-loading").style.display = "none";
+  if (state.allPois.length > 0) {
+    state.root.querySelector("#oda-loading").style.display = "none";
     return;
   }
 
   if (!apiUrl) {
-    showError("Keine API-URL konfiguriert (instanz-config 'apiurl').");
+    showError(state, "Keine API-URL konfiguriert (instanz-config 'apiurl').");
     throw new Error("missing apiurl");
   }
 
-  const raw = await fetchOdasResource(apiUrl, configdata);
+  const raw = await fetchOdasResource(apiUrl, state.config);
   let parsed;
   try {
     parsed = JSON.parse(raw);
   } catch (e) {
-    showError("Die Places-Daten konnten nicht als JSON gelesen werden.");
+    showError(state, "Die Places-Daten konnten nicht als JSON gelesen werden.");
     throw e;
   }
 
-  APP_STATE.allPois = Array.isArray(parsed) ? parsed : [];
-  odaRoot.querySelector("#oda-loading").style.display = "none";
+  state.allPois = Array.isArray(parsed) ? parsed : [];
+  state.root.querySelector("#oda-loading").style.display = "none";
 
-  if (APP_STATE.allPois.length === 0) {
-    showError("Es wurden keine Orte in den Daten gefunden.");
+  if (state.allPois.length === 0) {
+    showError(state, "Es wurden keine Orte in den Daten gefunden.");
     return;
   }
 
-  APP_STATE.latestDate = computeLatestDate(APP_STATE.allPois);
+  state.latestDate = computeLatestDate(state.allPois);
 }
 
 function computeLatestDate(pois) {
@@ -171,11 +169,11 @@ function computeLatestDate(pois) {
   return latest;
 }
 
-function computeAvailableFacets() {
+function computeAvailableFacets(state) {
   const types = new Set();
   const licenses = new Set();
   const languages = new Set();
-  for (const p of APP_STATE.allPois) {
+  for (const p of state.allPois) {
     if (p["@type"]) types.add(p["@type"]);
     if (p.license) licenses.add(p.license);
     for (const fld of ["name", "description", "disambiguatingDescription"]) {
@@ -183,74 +181,74 @@ function computeAvailableFacets() {
       if (v && typeof v === "object") Object.keys(v).forEach((l) => languages.add(l));
     }
   }
-  APP_STATE.availableTypes = Array.from(types).sort();
-  APP_STATE.availableLicenses = Array.from(licenses).sort();
-  APP_STATE.availableLanguages = Array.from(languages).sort();
+  state.availableTypes = Array.from(types).sort();
+  state.availableLicenses = Array.from(licenses).sort();
+  state.availableLanguages = Array.from(languages).sort();
 }
 
-function renderFilterOptions() {
-  const typeSel = odaRoot.querySelector("#oda-filter-type");
-  const langSel = odaRoot.querySelector("#oda-filter-language");
-  const licSel = odaRoot.querySelector("#oda-filter-license");
+function renderFilterOptions(state) {
+  const typeSel = state.root.querySelector("#oda-filter-type");
+  const langSel = state.root.querySelector("#oda-filter-language");
+  const licSel = state.root.querySelector("#oda-filter-license");
 
   typeSel.innerHTML =
     `<option value="">Alle</option>` +
-    APP_STATE.availableTypes.map((t) => `<option value="${escapeAttr(t)}">${escapeHtml(t)}</option>`).join("");
+    state.availableTypes.map((t) => `<option value="${escapeAttr(t)}">${escapeHtml(t)}</option>`).join("");
 
   langSel.innerHTML =
     `<option value="">Alle</option>` +
-    APP_STATE.availableLanguages.map((l) => `<option value="${escapeAttr(l)}">${escapeHtml(l)}</option>`).join("");
+    state.availableLanguages.map((l) => `<option value="${escapeAttr(l)}">${escapeHtml(l)}</option>`).join("");
 
   licSel.innerHTML =
     `<option value="">Alle</option>` +
-    APP_STATE.availableLicenses.map((l) => `<option value="${escapeAttr(l)}">${escapeHtml(l)}</option>`).join("");
+    state.availableLicenses.map((l) => `<option value="${escapeAttr(l)}">${escapeHtml(l)}</option>`).join("");
 }
 
-function bindFilterControls() {
-  odaRoot.querySelector("#oda-search").addEventListener("input", (e) => {
-    APP_STATE.filters.search = e.target.value.trim().toLowerCase();
-    APP_STATE.page = 0;
-    applyFilters();
+function bindFilterControls(state) {
+  state.root.querySelector("#oda-search").addEventListener("input", (e) => {
+    state.filters.search = e.target.value.trim().toLowerCase();
+    state.page = 0;
+    applyFilters(state);
   });
-  odaRoot.querySelector("#oda-filter-type").addEventListener("change", (e) => {
-    APP_STATE.filters.type = e.target.value;
-    APP_STATE.page = 0;
-    applyFilters();
+  state.root.querySelector("#oda-filter-type").addEventListener("change", (e) => {
+    state.filters.type = e.target.value;
+    state.page = 0;
+    applyFilters(state);
   });
-  odaRoot.querySelector("#oda-filter-language").addEventListener("change", (e) => {
-    APP_STATE.filters.language = e.target.value;
-    APP_STATE.page = 0;
-    applyFilters();
+  state.root.querySelector("#oda-filter-language").addEventListener("change", (e) => {
+    state.filters.language = e.target.value;
+    state.page = 0;
+    applyFilters(state);
   });
-  odaRoot.querySelector("#oda-filter-license").addEventListener("change", (e) => {
-    APP_STATE.filters.license = e.target.value;
-    APP_STATE.page = 0;
-    applyFilters();
+  state.root.querySelector("#oda-filter-license").addEventListener("change", (e) => {
+    state.filters.license = e.target.value;
+    state.page = 0;
+    applyFilters(state);
   });
-  odaRoot.querySelector("#oda-filter-reset").addEventListener("click", () => {
-    APP_STATE.filters = { search: "", type: "", language: "", license: "" };
-    odaRoot.querySelector("#oda-search").value = "";
-    odaRoot.querySelector("#oda-filter-type").value = "";
-    odaRoot.querySelector("#oda-filter-language").value = "";
-    odaRoot.querySelector("#oda-filter-license").value = "";
-    APP_STATE.page = 0;
-    applyFilters();
+  state.root.querySelector("#oda-filter-reset").addEventListener("click", () => {
+    state.filters = { search: "", type: "", language: "", license: "" };
+    state.root.querySelector("#oda-search").value = "";
+    state.root.querySelector("#oda-filter-type").value = "";
+    state.root.querySelector("#oda-filter-language").value = "";
+    state.root.querySelector("#oda-filter-license").value = "";
+    state.page = 0;
+    applyFilters(state);
   });
 }
 
-function bindListControls() {
-  odaRoot.querySelector("#oda-pager").addEventListener("click", (e) => {
+function bindListControls(state) {
+  state.root.querySelector("#oda-pager").addEventListener("click", (e) => {
     const btn = e.target.closest("[data-page]");
     if (!btn) return;
-    APP_STATE.page = Number(btn.getAttribute("data-page"));
-    renderList();
+    state.page = Number(btn.getAttribute("data-page"));
+    renderList(state);
   });
 }
 
-function applyFilters() {
-  const f = APP_STATE.filters;
+function applyFilters(state) {
+  const f = state.filters;
   const q = f.search;
-  APP_STATE.filteredPois = APP_STATE.allPois.filter((p) => {
+  state.filteredPois = state.allPois.filter((p) => {
     if (f.type && p["@type"] !== f.type) return false;
     if (f.license && p.license !== f.license) return false;
     if (f.language) {
@@ -259,9 +257,9 @@ function applyFilters() {
     }
     if (q) {
       const blob = [
-        localizedText(p.name, APP_STATE.activeLang),
-        localizedText(p.disambiguatingDescription, APP_STATE.activeLang),
-        localizedText(p.description, APP_STATE.activeLang),
+        localizedText(p.name, state.activeLang),
+        localizedText(p.disambiguatingDescription, state.activeLang),
+        localizedText(p.description, state.activeLang),
         p.address ? p.address.addressLocality : "",
         p.address ? p.address.streetAddress : "",
         p["@type"] || "",
@@ -273,10 +271,10 @@ function applyFilters() {
     return true;
   });
 
-  renderKpis();
-  renderList();
-  renderMap();
-  odaRoot.querySelector("#oda-filter-count").textContent = `${APP_STATE.filteredPois.length} von ${APP_STATE.allPois.length} Orten`;
+  renderKpis(state);
+  renderList(state);
+  renderMap(state);
+  state.root.querySelector("#oda-filter-count").textContent = `${state.filteredPois.length} von ${state.allPois.length} Orten`;
 }
 
 function collectLangs(p) {
@@ -288,23 +286,23 @@ function collectLangs(p) {
   return Array.from(langs);
 }
 
-function renderKpis() {
-  const all = APP_STATE.allPois;
-  const filtered = APP_STATE.filteredPois;
+function renderKpis(state) {
+  const all = state.allPois;
+  const filtered = state.filteredPois;
   const types = new Set(filtered.map((p) => p["@type"]).filter(Boolean));
   const licenses = new Set(filtered.map((p) => p.license).filter(Boolean));
   const langs = new Set();
   filtered.forEach((p) => collectLangs(p).forEach((l) => langs.add(l)));
 
-  const cd = window.__odaConfigdata || {};
+  const cd = state.config || {};
   const tiles = [
     { id: 1, label: "Gesamte Orte", value: filtered.length, total: all.length, ctx: String(cd.kpiKontext1 || "").trim() },
-    { id: 2, label: "Ortstypen", value: types.size, total: APP_STATE.availableTypes.length, ctx: String(cd.kpiKontext2 || "").trim() },
-    { id: 3, label: "Lizenzen", value: licenses.size, total: APP_STATE.availableLicenses.length, ctx: String(cd.kpiKontext3 || "").trim() },
-    { id: 4, label: "Sprachen", value: langs.size, total: APP_STATE.availableLanguages.length, ctx: String(cd.kpiKontext4 || "").trim() },
+    { id: 2, label: "Ortstypen", value: types.size, total: state.availableTypes.length, ctx: String(cd.kpiKontext2 || "").trim() },
+    { id: 3, label: "Lizenzen", value: licenses.size, total: state.availableLicenses.length, ctx: String(cd.kpiKontext3 || "").trim() },
+    { id: 4, label: "Sprachen", value: langs.size, total: state.availableLanguages.length, ctx: String(cd.kpiKontext4 || "").trim() },
   ];
 
-  odaRoot.querySelector("#oda-kpi").innerHTML = tiles
+  state.root.querySelector("#oda-kpi").innerHTML = tiles
     .map(
       (t) => `
       <div class="oda-kpi-card">
@@ -316,12 +314,12 @@ function renderKpis() {
     .join("");
 }
 
-function renderList() {
-  const list = odaRoot.querySelector("#oda-list");
-  const pager = odaRoot.querySelector("#oda-pager");
-  const pois = APP_STATE.filteredPois;
-  const start = APP_STATE.page * APP_STATE.pageSize;
-  const slice = pois.slice(start, start + APP_STATE.pageSize);
+function renderList(state) {
+  const list = state.root.querySelector("#oda-list");
+  const pager = state.root.querySelector("#oda-pager");
+  const pois = state.filteredPois;
+  const start = state.page * state.pageSize;
+  const slice = pois.slice(start, start + state.pageSize);
 
   if (pois.length === 0) {
     list.innerHTML = `<div class="oda-empty">Keine Orte gefunden für die aktuellen Filter.</div>`;
@@ -332,7 +330,7 @@ function renderList() {
     list.innerHTML = `<div class="oda-list-group">` +
     slice
       .map((p) => {
-        const name = localizedText(p.name, APP_STATE.activeLang) || "(ohne Name)";
+        const name = localizedText(p.name, state.activeLang) || "(ohne Name)";
         const type = p["@type"] || "Place";
         const ort = p.address ? p.address.addressLocality : "";
         const img = firstImage(p);
@@ -356,18 +354,18 @@ function renderList() {
     `</div>`;
 
   list.querySelectorAll(".oda-list-item").forEach((el) => {
-    el.addEventListener("click", () => toggleDetail(el.getAttribute("data-poi-id")));
+    el.addEventListener("click", () => toggleDetail(state, el.getAttribute("data-poi-id")));
   });
 
-  const totalPages = Math.max(1, Math.ceil(pois.length / APP_STATE.pageSize));
+  const totalPages = Math.max(1, Math.ceil(pois.length / state.pageSize));
   if (totalPages <= 1) {
-    pager.innerHTML = `<span class="oda-pager-info">Seite ${APP_STATE.page + 1} / ${totalPages}</span>`;
+    pager.innerHTML = `<span class="oda-pager-info">Seite ${state.page + 1} / ${totalPages}</span>`;
     return;
   }
   let pagerHtml = "";
-  pagerHtml += `<button type="button" class="oda-pager-btn" data-page="${Math.max(0, APP_STATE.page - 1)}" ${APP_STATE.page === 0 ? "disabled" : ""}>‹</button>`;
-  pagerHtml += `<span class="oda-pager-info">Seite ${APP_STATE.page + 1} / ${totalPages}</span>`;
-  pagerHtml += `<button type="button" class="oda-pager-btn" data-page="${Math.min(totalPages - 1, APP_STATE.page + 1)}" ${APP_STATE.page >= totalPages - 1 ? "disabled" : ""}>›</button>`;
+  pagerHtml += `<button type="button" class="oda-pager-btn" data-page="${Math.max(0, state.page - 1)}" ${state.page === 0 ? "disabled" : ""}>‹</button>`;
+  pagerHtml += `<span class="oda-pager-info">Seite ${state.page + 1} / ${totalPages}</span>`;
+  pagerHtml += `<button type="button" class="oda-pager-btn" data-page="${Math.min(totalPages - 1, state.page + 1)}" ${state.page >= totalPages - 1 ? "disabled" : ""}>›</button>`;
   pager.innerHTML = pagerHtml;
 }
 
@@ -393,51 +391,51 @@ function localizedText(value, lang) {
   return "";
 }
 
-function renderMap() {
+function renderMap(state) {
   loadLeaflet()
     .then(() => {
-      const el = odaRoot.querySelector("#oda-map");
+      const el = state.root.querySelector("#oda-map");
       if (!el) return;
-      if (!APP_STATE.map) {
-        APP_STATE.map = L.map(el, { scrollWheelZoom: true }).setView([47.37, 9.0], 8);
+      if (!state.map) {
+        state.map = L.map(el, { scrollWheelZoom: true }).setView([47.37, 9.0], 8);
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
           attribution: "© OpenStreetmap-Mitwirkende",
           maxZoom: 18,
-        }).addTo(APP_STATE.map);
-        APP_STATE.markerLayer = L.layerGroup().addTo(APP_STATE.map);
+        }).addTo(state.map);
+        state.markerLayer = L.layerGroup().addTo(state.map);
       }
-      APP_STATE.markerLayer.clearLayers();
+      state.markerLayer.clearLayers();
       const pts = [];
-      for (const p of APP_STATE.filteredPois) {
+      for (const p of state.filteredPois) {
         const g = p.geo;
         if (!g || g.latitude == null || g.longitude == null) continue;
         const lat = Number(g.latitude);
         const lon = Number(g.longitude);
         if (isNaN(lat) || isNaN(lon)) continue;
         pts.push([lat, lon]);
-        const name = localizedText(p.name, APP_STATE.activeLang) || "(ohne Name)";
+        const name = localizedText(p.name, state.activeLang) || "(ohne Name)";
         const marker = L.marker([lat, lon]).bindPopup(
           `<strong>${escapeHtml(name)}</strong><br><span class="small">${escapeHtml(p["@type"] || "Place")}</span>`
         );
-        marker.on("click", () => scrollToPoi(p.identifier));
-        APP_STATE.markerLayer.addLayer(marker);
+        marker.on("click", () => scrollToPoi(state, p.identifier));
+        state.markerLayer.addLayer(marker);
       }
       if (pts.length === 1) {
-        APP_STATE.map.setView(pts[0], 12);
+        state.map.setView(pts[0], 12);
       } else if (pts.length > 1) {
-        APP_STATE.map.fitBounds(L.latLngBounds(pts).pad(0.1));
+        state.map.fitBounds(L.latLngBounds(pts).pad(0.1));
       }
-      setTimeout(() => APP_STATE.map.invalidateSize(), 100);
+      setTimeout(() => state.map.invalidateSize(), 100);
     })
     .catch((err) => {
-      const el = odaRoot.querySelector("#oda-map");
+      const el = state.root.querySelector("#oda-map");
       if (el)
         el.innerHTML = `<div class="alert alert-warning">Karte konnte nicht geladen werden: ${escapeHtml(err.message)}</div>`;
     });
 }
 
-// App-Container (in app() gesetzt); alle DOM-Zugriffe laufen über ihn (F-25)
-let odaRoot = null;
+// App-Container: pro Instanz im state-Objekt (state.root); der Library-Load
+// bleibt ein Modul-Cache (unveränderlich, F-42)
 let leafletLoading = null;
 function loadLeaflet() {
   if (window.L) return Promise.resolve();
@@ -464,8 +462,8 @@ function loadLeaflet() {
   return leafletLoading;
 }
 
-function toggleDetail(poiId) {
-  const wrap = odaRoot.querySelector(`.oda-list-item-wrap[data-poi-id="${cssEscape(poiId)}"]`);
+function toggleDetail(state, poiId) {
+  const wrap = state.root.querySelector(`.oda-list-item-wrap[data-poi-id="${cssEscape(poiId)}"]`);
   if (!wrap) return;
   const detail = wrap.querySelector(".oda-list-detail");
   const chevron = wrap.querySelector(".oda-list-chevron");
@@ -476,24 +474,24 @@ function toggleDetail(poiId) {
     wrap.classList.remove("oda-list-item-open");
     if (chevron) chevron.style.transform = "";
   } else {
-    const p = APP_STATE.allPois.find((x) => String(x.identifier) === String(poiId));
+    const p = state.allPois.find((x) => String(x.identifier) === String(poiId));
     if (!p) return;
-    detail.innerHTML = detailHtml(p);
+    detail.innerHTML = detailHtml(state, p);
     detail.hidden = false;
-    bindDetailControls(p);
+    bindDetailControls(state, p);
     bindGallery(detail);
     wrap.classList.add("oda-list-item-open");
     if (chevron) chevron.style.transform = "rotate(90deg)";
   }
 }
 
-function scrollToPoi(poiId) {
-  const wrap = odaRoot.querySelector(`.oda-list-item-wrap[data-poi-id="${cssEscape(poiId)}"]`);
+function scrollToPoi(state, poiId) {
+  const wrap = state.root.querySelector(`.oda-list-item-wrap[data-poi-id="${cssEscape(poiId)}"]`);
   if (!wrap) return;
   wrap.scrollIntoView({ behavior: "smooth", block: "center" });
   const detail = wrap.querySelector(".oda-list-detail");
   if (detail && detail.hidden) {
-    toggleDetail(poiId);
+    toggleDetail(state, poiId);
   }
   wrap.classList.add("oda-list-item-flash");
   setTimeout(() => wrap.classList.remove("oda-list-item-flash"), 1200);
@@ -504,11 +502,11 @@ function cssEscape(s) {
   return String(s).replace(/[^a-zA-Z0-9_-]/g, "\\$&");
 }
 
-function detailHtml(p) {
-  const name = localizedText(p.name, APP_STATE.activeLang) || "(ohne Name)";
+function detailHtml(state, p) {
+  const name = localizedText(p.name, state.activeLang) || "(ohne Name)";
   const type = p["@type"] || "Place";
-  const desc = localizedText(p.description, APP_STATE.activeLang);
-  const short = localizedText(p.disambiguatingDescription, APP_STATE.activeLang);
+  const desc = localizedText(p.description, state.activeLang);
+  const short = localizedText(p.disambiguatingDescription, state.activeLang);
   const addr = p.address || {};
   const geo = p.geo || {};
   const images = Array.isArray(p.image) ? p.image : p.image ? [p.image] : [];
@@ -660,8 +658,8 @@ function typeIconSvg(type) {
   return `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`;
 }
 
-function bindDetailControls(p) {
-  const accordion = odaRoot.querySelector("#oda-jsonld-accordion");
+function bindDetailControls(state, p) {
+  const accordion = state.root.querySelector("#oda-jsonld-accordion");
   const codeEl = accordion ? accordion.querySelector("code") : null;
   if (accordion && codeEl) {
     accordion.addEventListener("toggle", () => {
@@ -671,7 +669,7 @@ function bindDetailControls(p) {
     });
   }
 
-  const copy = odaRoot.querySelector("#oda-jsonld-copy");
+  const copy = state.root.querySelector("#oda-jsonld-copy");
   if (copy) {
     copy.addEventListener("click", async () => {
       try {
@@ -690,7 +688,7 @@ function bindDetailControls(p) {
       }
     });
   }
-  const dl = odaRoot.querySelector("#oda-jsonld-download");
+  const dl = state.root.querySelector("#oda-jsonld-download");
   if (dl) {
     dl.addEventListener("click", () => {
       const blob = new Blob([JSON.stringify(toOdtaJsonLd(p), null, 2)], { type: "application/ld+json" });
@@ -793,15 +791,15 @@ function toOdtaJsonLd(p) {
   return out;
 }
 
-function renderSchale4Blocks(configdata) {
-  const top = odaRoot.querySelector("#oda-schale4-top");
-  const bottom = odaRoot.querySelector("#oda-schale4-bottom");
+function renderSchale4Blocks(state) {
+  const top = state.root.querySelector("#oda-schale4-top");
+  const bottom = state.root.querySelector("#oda-schale4-bottom");
 
-  const methodik = String(configdata.datenquelleHinweis || "").trim();
-  const datenStandText = String(configdata.datenStand || "").trim();
-  const links = String(configdata.weiterfuehrendeLinks || configdata.verwandteLinks || "").trim();
-  const freshness = APP_STATE.latestDate
-    ? new Date(APP_STATE.latestDate).toLocaleDateString("de-DE")
+  const methodik = String(state.config.datenquelleHinweis || "").trim();
+  const datenStandText = String(state.config.datenStand || "").trim();
+  const links = String(state.config.weiterfuehrendeLinks || state.config.verwandteLinks || "").trim();
+  const freshness = state.latestDate
+    ? new Date(state.latestDate).toLocaleDateString("de-DE")
     : "";
 
   let topHtml = "";
@@ -820,8 +818,8 @@ function renderSchale4Blocks(configdata) {
   bottom.innerHTML = bottomHtml;
 }
 
-function showError(msg) {
-  const el = odaRoot.querySelector("#oda-loading");
+function showError(state, msg) {
+  const el = state.root.querySelector("#oda-loading");
   if (el) el.innerHTML = `<div class="oda-error-box">${escapeHtml(msg)}</div>`;
 }
 

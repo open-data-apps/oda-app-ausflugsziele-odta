@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.13.0 - 2026-08-11
+- FIX: Laufzeitzustand pro App-Instanz isoliert (F-42): Modul-Konstante `APP_STATE` und Modul-`odaRoot` durch ein pro `app()`-Aufruf geschlossenes `state`-Objekt (uid, root, config, Daten, Filter, Karte) ersetzt; `window.__odaConfigdata` entfernt (Config läuft über `state.config`); Cache-Short-Circuit und KPI-Kontexttexte instanzlokal; `leafletLoading` bleibt als unveränderlicher Modul-Cache für den Library-Load
+
 ## 1.12.0 - 2026-08-11
 - FIX: XSS- und URL-Vertrag geschlossen (F-35): neuer Top-Level-Helfer `safeHttpUrl`; Beschreibungstexte, Adress-URLs und Bild-URLs in der Detailansicht nur noch über Escaping bzw. http(s)-Schema-Validierung ins HTML; `tel:`- und `mailto:`-Links aus externen Daten entfallen ersatzlos
 
