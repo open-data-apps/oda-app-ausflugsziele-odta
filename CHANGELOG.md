@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.12.0 - 2026-08-11
+- FIX: XSS- und URL-Vertrag geschlossen (F-35): neuer Top-Level-Helfer `safeHttpUrl`; Beschreibungstexte, Adress-URLs und Bild-URLs in der Detailansicht nur noch über Escaping bzw. http(s)-Schema-Validierung ins HTML; `tel:`- und `mailto:`-Links aus externen Daten entfallen ersatzlos
+
 ## 1.11.0 - 2026-08-06
 - CHG: DOM-Zugriffe auf den App-Container gescopt (F-25, Tranche 3): alle Elemente der App werden über den App-Container (Modul-Variable `odaRoot`, `odaRoot.querySelector`) angesprochen statt über document; alle IDs waren bereits mit `oda-` präfixiert, es waren keine Renames nötig; der Klassen-Selektor `.oda-list-item-wrap[data-poi-id=…]` wird über den App-Container gescopt (kein Rename)
 

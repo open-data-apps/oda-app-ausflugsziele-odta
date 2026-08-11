@@ -517,6 +517,7 @@ function detailHtml(p) {
   const copyright = p.copyrightHolder || "";
   const tel = addr.telephone || "";
   const url = addr.url || "";
+  const u = safeHttpUrl(url);
   const email = addr.email || "";
   const amenity = Array.isArray(p.amenityFeature) ? p.amenityFeature : [];
   const modified = p.dateModified || "";
@@ -524,18 +525,22 @@ function detailHtml(p) {
   const galleryHtml = images.length
     ? `<div class="oda-gallery">
         ${images
-          .map(
-            (img, i) =>
-              `<img src="${escapeAttr(img.contentUrl || img.url || "")}" alt="${escapeAttr(name)}" class="oda-gallery-img ${i === 0 ? "active" : ""}" loading="lazy">`
-          )
+          .map((img, i) => {
+            const imgUrl = safeHttpUrl(img.contentUrl || img.url || "");
+            return imgUrl
+              ? `<img src="${escapeAttr(imgUrl)}" alt="${escapeAttr(name)}" class="oda-gallery-img ${i === 0 ? "active" : ""}" loading="lazy">`
+              : "";
+          })
           .join("")}
        </div>
        ${images.length > 1 ? `<div class="oda-gallery-thumbs">
          ${images
-           .map(
-             (img, i) =>
-               `<img src="${escapeAttr(img.contentUrl || img.url || "")}" alt="" class="oda-gallery-thumb ${i === 0 ? "active" : ""}" data-idx="${i}" loading="lazy">`
-           )
+           .map((img, i) => {
+             const imgUrl = safeHttpUrl(img.contentUrl || img.url || "");
+             return imgUrl
+               ? `<img src="${escapeAttr(imgUrl)}" alt="" class="oda-gallery-thumb ${i === 0 ? "active" : ""}" data-idx="${i}" loading="lazy">`
+               : "";
+           })
            .join("")}
        </div>` : ""}`
     : "";
@@ -559,7 +564,7 @@ function detailHtml(p) {
 
     ${galleryHtml}
 
-    ${desc ? `<div class="oda-detail-desc">${desc}</div>` : ""}
+    ${desc ? `<div class="oda-detail-desc">${escapeHtml(desc)}</div>` : ""}
 
     <div class="oda-detail-grid">
       <div class="oda-detail-section">
@@ -572,18 +577,12 @@ function detailHtml(p) {
           ${(addr.postalCode || addr.addressLocality) ? `<div>${addr.postalCode ? escapeHtml(addr.postalCode) + " " : ""}${addr.addressLocality ? escapeHtml(addr.addressLocality) : ""}</div>` : ""}
           ${addr.addressCountry && addr.addressCountry.name ? `<div>${escapeHtml(addr.addressCountry.name.toUpperCase())}</div>` : ""}
         </div>
-        ${tel ? `<a href="tel:${escapeAttr(tel)}" class="oda-contact-link">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-          ${escapeHtml(tel)}
-        </a>` : ""}
-        ${email ? `<a href="mailto:${escapeAttr(email)}" class="oda-contact-link">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></svg>
-          ${escapeHtml(email)}
-        </a>` : ""}
-        ${url ? `<a href="${escapeAttr(url)}" target="_blank" rel="noopener" class="oda-contact-link">
+        ${tel ? `<div>${escapeHtml(tel)}</div>` : ""}
+        ${email ? `<div>${escapeHtml(email)}</div>` : ""}
+        ${u ? `<a href="${escapeAttr(u)}" target="_blank" rel="noopener" class="oda-contact-link">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-          ${escapeHtml(url.replace(/^https?:\/\//, ""))}
-        </a>` : ""}
+          ${escapeHtml(u.replace(/^https?:\/\//, ""))}
+        </a>` : url ? `<div>${escapeHtml(url)}</div>` : ""}
       </div>
 
       <div class="oda-detail-section">
@@ -833,6 +832,11 @@ function escapeHtml(value = "") {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
+}
+
+function safeHttpUrl(value) {
+  const s = String(value || "").trim();
+  return /^https?:\/\//i.test(s) ? s : "";
 }
 
 function escapeAttr(value = "") {
