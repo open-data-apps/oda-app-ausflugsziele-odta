@@ -333,7 +333,7 @@ function renderList(state) {
         const name = localizedText(p.name, state.activeLang) || "(ohne Name)";
         const type = p["@type"] || "Place";
         const ort = p.address ? p.address.addressLocality : "";
-        const img = firstImage(p);
+        const img = safeHttpUrl(firstImage(p));
         const thumb = img
           ? `<img src="${escapeAttr(img)}" alt="" class="oda-list-thumb" loading="lazy">`
           : `<div class="oda-list-thumb oda-list-thumb-placeholder"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>`;

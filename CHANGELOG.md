@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.14.0 - 2026-08-11
+- FIX: Listen-Thumbnails auf HTTP und HTTPS beschraenkt (F-35-Konsistenz zur Galerie): renderList validiert die Thumbnail-URL jetzt ueber `safeHttpUrl(firstImage(p))`; ungueltige Schemata wie `javascript:`, `data:` oder `vbscript:` werden nicht mehr als `<img src>` gerendert, sondern fallen auf den vorhandenen Platzhalter `.oda-list-thumb-placeholder` zurueck
+
 ## 1.13.0 - 2026-08-11
 - FIX: Laufzeitzustand pro App-Instanz isoliert (F-42): Modul-Konstante `APP_STATE` und Modul-`odaRoot` durch ein pro `app()`-Aufruf geschlossenes `state`-Objekt (uid, root, config, Daten, Filter, Karte) ersetzt; `window.__odaConfigdata` entfernt (Config läuft über `state.config`); Cache-Short-Circuit und KPI-Kontexttexte instanzlokal; `leafletLoading` bleibt als unveränderlicher Modul-Cache für den Library-Load
 
