@@ -88,7 +88,7 @@ Empfohlene ODAS-Einstellungen:
 }
 ```
 
-`liveServer.settings.file` ist optional. `liveServer.settings.root` sollte für ODAS-Apps normalerweise `/` bleiben, damit `app/` und `odas-config/` gleichzeitig erreichbar sind. Falls `app/app-base.js` für lokale Tests den auskommentierten `getConfigUrl()`-Localhost-Block nutzt, muss dieser vor ZIP-Erstellung und ODAS-Live-Auslieferung wieder auskommentiert werden.
+`liveServer.settings.file` ist optional. `liveServer.settings.root` sollte für ODAS-Apps normalerweise `/` bleiben, damit `app/` und `odas-config/` gleichzeitig erreichbar sind. Die App erkennt Localhost (127.0.0.1/localhost) automatisch und lädt dann `odas-config/config.json`; kein Edit an `app/app-base.js` nötig.
 
 ### Aufbau der App
 Der Inhaltsbereich wird in `app/app.js` erstellt. Dort sind Datenladen, CORS-Proxy-Fallback, Filter, Paginierung, Leaflet-Karte, Detailansicht, JSON-LD-Export und Schale-4-Komponenten implementiert. Template-eigene Dateien (`app/app-base.js`, `app/app-base.css`, `app/index.html`) werden nicht verändert. Leaflet wird dynamisch nachgeladen.
