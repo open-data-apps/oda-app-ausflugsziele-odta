@@ -1,5 +1,9 @@
 # Changelog
 
+
+## 1.16.0 - 2026-08-12
+- FIX: `app/index.html` auf den Template-Stand (F-47): Datei byte-gleich aus `oda-generic` übernommen — gültiges HTML, deutsche ARIA-Labels, Footer im Body; Titel und Fußzeile bleiben Platzhalter und werden zur Laufzeit aus der Instanz-Config überschrieben
+
 ## 1.15.0 - 2026-08-12
 - FIX: Laufzeitressourcen einer Leaflet-Instanz werden beim Seitenwechsel freigegeben (F-51): neuer Modul-Hook `onPageLeave` raeumt ueber die Registry `ausflugInstances` (Container -> state) alle offenen Karten der jeweiligen Instanz ab; Wiedereintritt in denselben Container entfernt eine evtl. noch offene Vorgaengerinstanz; der 100-ms-`invalidateSize`-Timer laeuft nicht mehr auf einer abgeraumten Karte (Guard auf `state.disposed`/`state.map`)
 
