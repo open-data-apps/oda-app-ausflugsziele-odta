@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.15.0 - 2026-08-12
+- FIX: Laufzeitressourcen einer Leaflet-Instanz werden beim Seitenwechsel freigegeben (F-51): neuer Modul-Hook `onPageLeave` raeumt ueber die Registry `ausflugInstances` (Container -> state) alle offenen Karten der jeweiligen Instanz ab; Wiedereintritt in denselben Container entfernt eine evtl. noch offene Vorgaengerinstanz; der 100-ms-`invalidateSize`-Timer laeuft nicht mehr auf einer abgeraumten Karte (Guard auf `state.disposed`/`state.map`)
+
 ## 1.14.0 - 2026-08-11
 - FIX: Listen-Thumbnails auf HTTP und HTTPS beschraenkt (F-35-Konsistenz zur Galerie): renderList validiert die Thumbnail-URL jetzt ueber `safeHttpUrl(firstImage(p))`; ungueltige Schemata wie `javascript:`, `data:` oder `vbscript:` werden nicht mehr als `<img src>` gerendert, sondern fallen auf den vorhandenen Platzhalter `.oda-list-thumb-placeholder` zurueck
 

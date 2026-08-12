@@ -20,6 +20,28 @@
 // von app() erzeugten state-Objekt (kein Modul-Global mehr).
 let appInstanzZaehler = 0;
 
+// F-51: Container -> state, damit onPageLeave die Laufzeitressourcen genau
+// dieser Instanz freigeben kann (Muster wie oda-app-brunnenkarte).
+const ausflugInstances = new Map();
+
+/* Wird von app/app-base.js zu Beginn von loadPage() aufgerufen, bevor die
+ * naechste Seite rendert. Gibt ausschliesslich eigene Ressourcen frei. */
+function onPageLeave(page) {
+  ausflugInstances.forEach((state, container) => {
+    state.disposed = true;
+    if (state.map) {
+      try {
+        state.map.remove();
+      } catch (error) {
+        console.warn("Fehler beim Entfernen der Leaflet-Karte:", error);
+      }
+      state.map = null;
+    }
+    state.markerLayer = null;
+    ausflugInstances.delete(container);
+  });
+}
+
 const LICENSE_URLS = {
   CC0: "https://creativecommons.org/publicdomain/zero/1.0/",
   "CC BY": "https://creativecommons.org/licenses/by/4.0/",
@@ -41,7 +63,7 @@ function app(configdata = {}, enclosingHtmlDivElement) {
     uid: "i" + ++appInstanzZaehler,
     root: enclosingHtmlDivElement,
     config: configdata,
-    disposed: false, // wird in Task 9 (onPageLeave) gesetzt
+    disposed: false, // wird von onPageLeave gesetzt (F-51)
     allPois: [],
     filteredPois: [],
     activeLang: pickLang(["de", "en", "fr", "it"], configdata.standardSprache),
@@ -61,6 +83,22 @@ function app(configdata = {}, enclosingHtmlDivElement) {
     availableLanguages: [],
     latestDate: null,
   };
+
+  // F-51: eine evtl. noch offene Vorgaengerinstanz desselben Containers
+  // abraeumen, dann diese Instanz registrieren.
+  const vorherigerState = ausflugInstances.get(enclosingHtmlDivElement);
+  if (vorherigerState) {
+    vorherigerState.disposed = true;
+    if (vorherigerState.map) {
+      try {
+        vorherigerState.map.remove();
+      } catch (error) {
+        console.warn("Fehler beim Entfernen der Leaflet-Karte:", error);
+      }
+      vorherigerState.map = null;
+    }
+  }
+  ausflugInstances.set(enclosingHtmlDivElement, state);
 
   state.root.innerHTML = renderShell();
 
@@ -425,7 +463,10 @@ function renderMap(state) {
       } else if (pts.length > 1) {
         state.map.fitBounds(L.latLngBounds(pts).pad(0.1));
       }
-      setTimeout(() => state.map.invalidateSize(), 100);
+      setTimeout(() => {
+        if (state.disposed || !state.map) return; // F-51
+        state.map.invalidateSize();
+      }, 100);
     })
     .catch((err) => {
       const el = state.root.querySelector("#oda-map");
