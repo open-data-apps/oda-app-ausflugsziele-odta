@@ -3,7 +3,7 @@
   "app-entwickler-name": "ondics-gmbh",
   "name-in-url": "ausflugsziele",
   "name": "Ausflugsziele-ODTA-Tourist-Attraction",
-  "version": "1.18.0",
+  "version": "1.19.0",
   "odas-app-icon": "assets/odas-app-icon.svg",
   "app-icon": "assets/odas-app-icon.svg",
   "kurzbeschreibung": "Ausflugsziele-App mit Karte, Filter, Detailansicht und ODTA-konformem JSON-LD-Export auf Basis der Open-Data-Quelle Ostschweiz Tourismus.",
@@ -173,8 +173,8 @@
       "format": {
         "typ": "url"
       },
-      "default": "https://opendata.ost.contentdesk.io/api/Place.json",
-      "beispiel": "https://opendata.ost.contentdesk.io/api/Place.json",
+      "default": "https://opendata.ost.contentdesk.io/",
+      "beispiel": "https://opendata.ost.contentdesk.io/",
       "erforderlich": "ja"
     },
     "fusszeile": {
