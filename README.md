@@ -126,7 +126,6 @@ Folgende Parameter werden bei der App-Instanzierung im ODAS konfiguriert:
 | `apiurl` | URL zu den Places-Daten (schema.org-konformes JSON) | ja |
 | `urlDaten` | URL zur Katalog-Seite des Datensatzes im ODP | ja |
 | `standardSprache` | Anzeigesprache für mehrsprachige Felder (de/en/fr/it) | ja |
-| `proxyAktiv` | ODAS-Proxy aktivieren (`ja`/`nein`). Die Ostschweiz-Quelle erlaubt CORS – Standard ist `nein`. | ja |
 | `sprache` | Sprache der App (`de`) | ja |
 | `lizenz` | Lizenz der App | ja |
 | `titel` | Anzeigetitel der App | ja |
@@ -142,14 +141,11 @@ Folgende Parameter werden bei der App-Instanzierung im ODAS konfiguriert:
 ---
 
 ## ODAS-Proxy
-Die Ostschweiz-Quelle erlaubt CORS und kann direkt per `fetch` geladen werden:
-
-- `proxyAktiv: "nein"` (Standard) lädt Ressourcen direkt.
-- `proxyAktiv: "ja"` lädt Ressourcen über den ODAS-Proxy-Endpunkt `odp-data`.
-
-Echte Proxy-Aufrufe funktionieren nur im ODAS-Live-System. Lokal kann nur geprüft werden,
-ob die Konfiguration geladen und der Proxy-Status korrekt angezeigt wird sowie der
-Direct-Modus funktioniert.
+Die Ostschweiz-Quelle erlaubt CORS und kann direkt per `fetch` geladen werden. Der ODAS-Proxy
+wird derzeit umgebaut und funktioniert nach der aktuellen Host-Regel ohnehin nicht mit dieser
+Fremdquelle (kein passendes ODP-Portal für `opendata.ost.contentdesk.io`; jeder
+`…/odp-data`-Aufruf würde mit HTTP 500 scheitern, ohne Fallback). Das Umschaltfeld
+`proxyAktiv` wird deshalb bewusst **nicht angeboten**; die App lädt ausschließlich direkt.
 
 ---
 
@@ -158,14 +154,10 @@ Direct-Modus funktioniert.
 Die App kann lokal, eigenstaendig hinter einem Traefik-Reverse-Proxy oder ueber den ODAS
 betrieben werden.
 
-### Datenabruf: `proxyAktiv`
+### Datenabruf: kein `proxyAktiv`-Schalter
 
-| Wert   | Bedeutung                                                                   |
-| ------ | --------------------------------------------------------------------------- |
-| `nein` | Direkter Abruf der Daten-URL. Standard fuer Entwicklung und Standalone.      |
-| `ja`   | Abruf ueber den ODAS-Proxy `…/odp-data`. Nur im ODAS-Live-System verfuegbar. |
-
-Bei `nein` muss die Datenquelle CORS freigeben.
+Kein Proxy-Umschalter (siehe „ODAS-Proxy" oben). Die konfigurierte Datenquelle muss CORS
+freigeben; die Ostschweiz-Quelle tut das bereits.
 
 ### Standalone-Betrieb
 
@@ -174,8 +166,7 @@ dem EntryPoint `websecure` und dem Zertifikatsresolver `letsencrypt`.
 
 1. In `docker-compose.standalone.yml` den Platzhalter `app1.example.com` durch den
    echten FQDN ersetzen.
-2. In `odas-config/config.json` `proxyAktiv` auf `nein` belassen.
-3. Starten:
+2. Starten:
 
 ```bash
 STANDALONE=true make up

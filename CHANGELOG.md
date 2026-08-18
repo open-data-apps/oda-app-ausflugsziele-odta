@@ -1,6 +1,9 @@
 # Changelog
 
 
+## 1.20.0 - 2026-08-18
+- `proxyAktiv`-Schalter entfernt (`app-package.json`, `odas-config/config.json`): Der ODAS-Proxy wird umgebaut und funktioniert nach der aktuellen Host-Regel nicht mit `opendata.ost.contentdesk.io` (kein passendes ODP-Portal); das Feld wird bis zum Abschluss des Umbaus bewusst nicht angeboten. Die App lief bereits im Direktmodus (`proxyAktiv: "nein"`), das Verhalten ändert sich nicht.
+
 ## 1.19.0 - 2026-08-17
 - `urlDaten` zeigte identisch auf den JSON-API-Endpunkt von `apiurl` (`opendata.ost.contentdesk.io/api/Place.json`); jetzt auf die echte Portal-Dokumentationsseite `https://opendata.ost.contentdesk.io/` verweisend (live verifiziert, HTTP 200) (F-68)
 

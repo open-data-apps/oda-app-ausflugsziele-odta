@@ -34,7 +34,7 @@
   "datenschutz": [
     "<p>Diese App verarbeitet die angezeigten offenen Daten ausschließlich im Browser. Es werden keine Cookies gesetzt, keine Nutzungsstatistiken erhoben und keine Daten im Browser gespeichert.</p>",
     "<p>Alle für die Darstellung benötigten Programmbibliotheken werden mit der App ausgeliefert. Beim Aufruf werden dafür keine externen Server kontaktiert.</p>",
-    "<p>Die angezeigten Daten werden vom Browser direkt aus der konfigurierten Datenquelle geladen. Dabei werden technisch bedingt IP-Adresse und Browserkennung an deren Betreiber übermittelt. Maßgeblich ist der Schalter <code>proxyAktiv</code> der Instanz-Konfiguration.</p>",
+    "<p>Die angezeigten Daten werden vom Browser direkt aus der konfigurierten Datenquelle geladen. Dabei werden technisch bedingt IP-Adresse und Browserkennung an deren Betreiber übermittelt.</p>",
     "<h3>Beim Aufruf kontaktierte Drittanbieter</h3><p>Folgende externe Server werden kontaktiert. Dabei werden IP-Adresse und User-Agent der Besucher:innen an diese Anbieter übertragen:</p><ul><li><strong>tile.openstreetmap.org</strong> — Kartenkacheln (OpenStreetMap)</li></ul>"
   ],
   "urlDaten": "https://opendata.ost.contentdesk.io/",
@@ -46,7 +46,6 @@
   ],
   "apiurl": "https://opendata.ost.contentdesk.io/api/Place.json",
   "standardSprache": "de",
-  "proxyAktiv": "nein",
   "sprache": "de",
   "kpiKontext1": "Anzahl der aktuell angezeigten Orte im Verhältnis zu allen verfügbaren Orten im Datenbestand. Über die Filter lässt sich die Auswahl gezielt eingrenzen.",
   "kpiKontext2": "Anzahl unterschiedlicher Ortstypen (z. B. Wasserfall, historisches Gebäude, Berg) in der aktuellen Auswahl. Eine höhere Anzahl bedeutet eine vielfältigere Auswahl an Sehenswürdigkeiten.",
