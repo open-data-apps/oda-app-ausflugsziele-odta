@@ -107,12 +107,14 @@ function app(configdata = {}, enclosingHtmlDivElement) {
 
   loadData(state)
     .then(() => {
+      if (state.disposed) return; // F-70: Container evtl. waehrend loadData() entsorgt worden
       computeAvailableFacets(state);
       renderFilterOptions(state);
       applyFilters(state);
       renderSchale4Blocks(state);
     })
     .catch((err) => {
+      if (state.disposed) return; // F-70
       console.error("Daten konnten nicht geladen werden:", err);
       showError(state, "Daten konnten nicht geladen werden: " + (err && err.message ? err.message : err));
     });
@@ -163,6 +165,8 @@ function renderShell() {
 }
 
 async function loadData(state) {
+  if (state.disposed) return; // F-70
+
   const apiUrl = String(state.config.apiurl || "").trim();
 
   if (state.allPois.length > 0) {
@@ -176,6 +180,8 @@ async function loadData(state) {
   }
 
   const raw = await fetchOdasResource(apiUrl, state.config);
+  if (state.disposed) return; // F-70: Container evtl. waehrend des Fetches entsorgt worden
+
   let parsed;
   try {
     parsed = JSON.parse(raw);
@@ -284,6 +290,8 @@ function bindListControls(state) {
 }
 
 function applyFilters(state) {
+  if (state.disposed) return; // F-70
+
   const f = state.filters;
   const q = f.search;
   state.filteredPois = state.allPois.filter((p) => {
@@ -325,6 +333,8 @@ function collectLangs(p) {
 }
 
 function renderKpis(state) {
+  if (state.disposed) return; // F-70
+
   const all = state.allPois;
   const filtered = state.filteredPois;
   const types = new Set(filtered.map((p) => p["@type"]).filter(Boolean));
@@ -353,6 +363,8 @@ function renderKpis(state) {
 }
 
 function renderList(state) {
+  if (state.disposed) return; // F-70
+
   const list = state.root.querySelector("#oda-list");
   const pager = state.root.querySelector("#oda-pager");
   const pois = state.filteredPois;
@@ -430,8 +442,11 @@ function localizedText(value, lang) {
 }
 
 function renderMap(state) {
+  if (state.disposed) return; // F-70
+
   loadLeaflet()
     .then(() => {
+      if (state.disposed) return; // F-70: Container evtl. waehrend loadLeaflet() entsorgt worden
       const el = state.root.querySelector("#oda-map");
       if (!el) return;
       if (!state.map) {
@@ -469,6 +484,7 @@ function renderMap(state) {
       }, 100);
     })
     .catch((err) => {
+      if (state.disposed) return; // F-70
       const el = state.root.querySelector("#oda-map");
       if (el)
         el.innerHTML = `<div class="alert alert-warning">Karte konnte nicht geladen werden: ${escapeHtml(err.message)}</div>`;
@@ -833,6 +849,8 @@ function toOdtaJsonLd(p) {
 }
 
 function renderSchale4Blocks(state) {
+  if (state.disposed) return; // F-70
+
   const top = state.root.querySelector("#oda-schale4-top");
   const bottom = state.root.querySelector("#oda-schale4-bottom");
 
