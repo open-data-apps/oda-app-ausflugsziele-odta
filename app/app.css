@@ -276,10 +276,16 @@
 }
 .oda-freshness::before { content: "🕒"; font-size: 0.85rem; }
 
-/* Link-List (für verwandteLinks) */
+/* Link-List (für verwandteLinks/weiterfuehrendeLinks). Die Werte sind seit 1.23.0 Markdown-
+   Felder; ODAS liefert das konvertierte <ul> ohne Klasse aus, daher greift der Selektor über
+   den Kartencontainer. .oda-link-list bleibt als Fallback für noch nicht migrierte Configs. */
+.oda-schale4-card ul,
 .oda-link-list { list-style: none; padding: 0; margin: 0.3rem 0 0; }
+.oda-schale4-card ul li,
 .oda-link-list li { padding: 0.15rem 0; font-size: 0.85rem; }
+.oda-schale4-card ul a,
 .oda-link-list a { color: var(--oda-primary); text-decoration: none; }
+.oda-schale4-card ul a:hover,
 .oda-link-list a:hover { text-decoration: underline; }
 
 /* === Responsive === */

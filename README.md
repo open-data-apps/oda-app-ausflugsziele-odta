@@ -116,6 +116,20 @@ Der Inhaltsbereich wird in `app/app.js` erstellt. Dort sind Datenladen, CORS-Pro
 | `assets/odas-app-icon.svg` | ODAS-konformes App-Icon |
 | `odas-config/config.json` | Lokale Konfiguration für die Entwicklung |
 
+### Rich-Text-Format: Markdown vs. HTML
+
+Die Rich-Text-Felder (`beschreibung`, `kontakt`, `impressum`, `datenschutz`, `datenquelleHinweis`,
+`verwandteLinks`, `weiterfuehrendeLinks`) sind in `app-package.json` bewusst als **Markdown**
+verfasst (`##`-Überschriften, `-`-Listen, `[Text](URL)`-Links). ODAS wandelt `format.typ:
+"markdown"`-Felder vor der Auslieferung an die App selbst in HTML um (siehe
+`open-data-app-spezifikation.md`, Abschnitt „Multiline und Rich Text").
+
+Die lokale `odas-config/config.json` enthält dieselben Inhalte dagegen als **HTML** — sie
+simuliert damit die von ODAS bereits konvertierte Config, weil die lokale `app/app-base.js`
+selbst keinen Markdown-Parser mitbringt und den Wert unverändert per `innerHTML` ausgibt. Beim
+Ändern eines Rich-Text-Felds müssen beide Dateien inhaltlich synchron gehalten werden, aber im
+jeweils passenden Format.
+
 ---
 
 ## Konfiguration (Instanz)
@@ -123,7 +137,7 @@ Folgende Parameter werden bei der App-Instanzierung im ODAS konfiguriert:
 
 | Parameter | Beschreibung | Pflicht |
 | --- | --- | --- |
-| `apiurl` | URL zu den Places-Daten (schema.org-konformes JSON) | ja |
+| `apiurl` | URL zu den Places-Daten (schema.org-/ODTA-konformes JSON, siehe „Andere Datensätze verwenden" unten) | ja |
 | `urlDaten` | URL zur Katalog-Seite des Datensatzes im ODP | ja |
 | `standardSprache` | Anzeigesprache für mehrsprachige Felder (de/en/fr/it) | ja |
 | `sprache` | Sprache der App (`de`) | ja |
@@ -137,6 +151,32 @@ Folgende Parameter werden bei der App-Instanzierung im ODAS konfiguriert:
 | `datenquelleHinweis` | Methodik-Kasten (Markdown) | nein |
 | `datenStand` | Zusätzlicher Text zum Datenstand | nein |
 | `verwandteLinks` | Verwandte Links (Markdown) | nein |
+
+### Andere Datensätze verwenden
+
+Die App ist nicht an die Ostschweiz-Quelle gebunden. Jede Quelle, die per `apiurl` eingebunden
+wird, muss folgende Voraussetzungen erfüllen:
+
+- HTTPS-Endpunkt, der ein **JSON-Array auf oberster Ebene** liefert (kein CKAN-Wrapper, kein
+  `result.records`)
+- Objekte im schema.org-/ODTA-Stil mit mindestens `@type` und `name`
+- `geo` mit `latitude`/`longitude` für die Kartendarstellung
+- CORS-Freigabe, da die App direkt aus dem Browser lädt (siehe „ODAS-Proxy" unten)
+
+Live geprüfte Beispiel-Endpunkte desselben Portals (HTTP 200, `access-control-allow-origin: *`):
+
+| Endpunkt | Inhalt |
+| --- | --- |
+| `/api/Place.json` | aktuelle Standardquelle |
+| `/api/LodgingBusiness.json` | Unterkünfte |
+| `/api/LocalBusiness.json` | Restaurants, Cafés |
+| `/api/FoodEstablishment.json` | Gastronomie |
+| `/api/category.json` | vollständiger Kategoriebaum als Einstieg |
+
+Andere CONTENTDESK-/discover.swiss-basierte Portale nutzen denselben Standard. Der
+JSON-LD-Export (`toOdtaJsonLd()` in `app/app.js`) bildet dabei immer auf
+`schema:TouristAttraction` ab und führt den Ursprungstyp als `additionalType` mit;
+typspezifische Felder (z. B. Veranstaltungszeiten bei `Event.json`) zeigt die App nicht an.
 
 ---
 

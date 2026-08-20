@@ -1,6 +1,19 @@
 # Changelog
 
 
+## 1.24.0 - 2026-08-20
+- **NEU:** Abschnitt „ODTA-Daten" in der Beschreibung (`beschreibung`, Store & App-Seite) — erklärt, was ODTA ist (Open Data Tourism Alliance, DACH-Initiative der nationalen Tourismusorganisationen, Domain Specifications auf schema.org-Basis) und welche ODTA-/schema.org-Felder die App auswertet und als JSON-LD exportiert
+- **NEU:** Abschnitt „Andere ODTA-Datensätze verwenden" nach „Datenquelle" — beschreibt die Voraussetzungen an eine kompatible Quelle (JSON-Array, schema.org-/ODTA-Stil, `geo`, CORS) und listet live geprüfte Beispiel-Endpunkte desselben Portals (`LodgingBusiness.json`, `LocalBusiness.json`, `FoodEstablishment.json`, `category.json`) sowie den Hinweis auf andere CONTENTDESK-/discover.swiss-basierte Portale
+- **CHG:** Zweiter Absatz der Einleitung benennt jetzt explizit den ODTA-Standard statt „strukturierte Open-Data-Informationen"
+- **CHG:** `apiurl`-Hilfetext im ODAS-Editor um dieselben Anforderungen und Beispiel-Endpunkte ergänzt
+- FIX: Top-Level-`beschreibung` (Store) und `instanz-config.beschreibung` (App-Seite „Über diese App") waren durch eine manuelle Zwischenänderung auseinandergelaufen („Open Data App" vs. „Open Data App Store", doppeltes „den den"); beide Ebenen sind jetzt wieder inhaltlich identisch
+
+## 1.23.0 - 2026-08-20
+- **CHG:** Rich-Text-Felder (`beschreibung` [Store & App-Seite], `kontakt`, `impressum`, `datenschutz`, `datenquelleHinweis`, `verwandteLinks`, `weiterfuehrendeLinks`) von HTML-Passthrough auf echtes Markdown umgestellt, gemäß `open-data-app-spezifikation.md`: ODAS wandelt `format.typ: "markdown"`-Felder vor der Auslieferung selbst in HTML um. Die lokale `odas-config/config.json` bleibt bewusst HTML — sie simuliert das Ergebnis der ODAS-Konvertierung für den Live-Server-Test.
+- **NEU:** Abschnitt „Methodik" in der App-Beschreibung (`beschreibung`), zwischen „Für wen ist diese App?" und „Datenquelle" — erläutert Datenherkunft, Normalisierung und Limitierungen ausführlicher als der Startseiten-Kasten (`datenquelleHinweis`, bleibt unverändert bestehen)
+- **NEU:** Abschnitt „Open Data App Store" verlinkt jetzt zusätzlich den Quellcode: die GitHub-Organisation `open-data-apps` und das App-eigene Repository `oda-app-ausflugsziele-odta`
+- FIX: CSS-Selektor für „Verwandte Links" (`app/app.css`) greift jetzt über `.oda-schale4-card ul`, da der ODAS-Markdown-Konverter kein `class="oda-link-list"` mehr mitliefert
+
 ## 1.22.0 - 2026-08-20
 - FIX: Drei-Datenzustände-Kontrakt umgesetzt — fehlende `apiurl` und 0 gefundene Orte rufen jetzt `showInfo()` (`alert-info`) statt eine Exception zu werfen; Ladefehler rufen weiterhin `showError()` (`alert-danger`) auf (F-69)
 
