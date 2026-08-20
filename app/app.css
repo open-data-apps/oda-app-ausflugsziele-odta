@@ -35,6 +35,10 @@
   padding: 1rem 1.25rem; background: #fff5f5; border: 1px solid #ffb4b4;
   border-radius: var(--oda-radius); color: #c0392b; font-size: 0.9rem;
 }
+.oda-info-box {
+  padding: 1rem 1.25rem; background: #f0f7f7; border: 1px solid #bce2df;
+  border-radius: var(--oda-radius); color: #1d5557; font-size: 0.9rem;
+}
 
 /* === KPI Grid === */
 .oda-kpi-grid {

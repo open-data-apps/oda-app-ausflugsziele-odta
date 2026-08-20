@@ -1,6 +1,9 @@
 # Changelog
 
 
+## 1.22.0 - 2026-08-20
+- FIX: Drei-Datenzustände-Kontrakt umgesetzt — fehlende `apiurl` und 0 gefundene Orte rufen jetzt `showInfo()` (`alert-info`) statt eine Exception zu werfen; Ladefehler rufen weiterhin `showError()` (`alert-danger`) auf (F-69)
+
 ## 1.21.0 - 2026-08-20
 - FIX: `state.disposed` wird jetzt in `loadData()`, `applyFilters()`, `renderKpis()`, `renderList()`, `renderMap()` und `renderSchale4Blocks()` geprüft, nicht mehr nur in einem einzelnen `setTimeout`-Callback (F-70)
 

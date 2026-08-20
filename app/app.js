@@ -108,6 +108,7 @@ function app(configdata = {}, enclosingHtmlDivElement) {
   loadData(state)
     .then(() => {
       if (state.disposed) return; // F-70: Container evtl. waehrend loadData() entsorgt worden
+      if (state.allPois.length === 0) return;
       computeAvailableFacets(state);
       renderFilterOptions(state);
       applyFilters(state);
@@ -116,7 +117,6 @@ function app(configdata = {}, enclosingHtmlDivElement) {
     .catch((err) => {
       if (state.disposed) return; // F-70
       console.error("Daten konnten nicht geladen werden:", err);
-      showError(state, "Daten konnten nicht geladen werden: " + (err && err.message ? err.message : err));
     });
 }
 
@@ -174,12 +174,18 @@ async function loadData(state) {
     return;
   }
 
-  if (!apiUrl) {
-    showError(state, "Keine API-URL konfiguriert (instanz-config 'apiurl').");
-    throw new Error("missing apiurl");
+  if (!apiUrl || /^\{\{.*\}\}$/.test(apiUrl) || /^<.*>$/.test(apiUrl)) {
+    showInfo(state, "Es ist keine Datenquelle konfiguriert.");
+    return;
   }
 
-  const raw = await fetchOdasResource(apiUrl, state.config);
+  let raw;
+  try {
+    raw = await fetchOdasResource(apiUrl, state.config);
+  } catch (e) {
+    showError(state, e.message || String(e));
+    throw e;
+  }
   if (state.disposed) return; // F-70: Container evtl. waehrend des Fetches entsorgt worden
 
   let parsed;
@@ -194,7 +200,7 @@ async function loadData(state) {
   state.root.querySelector("#oda-loading").style.display = "none";
 
   if (state.allPois.length === 0) {
-    showError(state, "Es wurden keine Orte in den Daten gefunden.");
+    showInfo(state, "Keine Orte in der Datenquelle gefunden.");
     return;
   }
 
@@ -879,7 +885,18 @@ function renderSchale4Blocks(state) {
 
 function showError(state, msg) {
   const el = state.root.querySelector("#oda-loading");
-  if (el) el.innerHTML = `<div class="oda-error-box">${escapeHtml(msg)}</div>`;
+  if (el) {
+    el.style.display = "";
+    el.innerHTML = `<div class="oda-error-box alert alert-danger" role="alert"><strong>Fehler beim Laden der Daten:</strong> ${escapeHtml(msg)}</div>`;
+  }
+}
+
+function showInfo(state, msg) {
+  const el = state.root.querySelector("#oda-loading");
+  if (el) {
+    el.style.display = "";
+    el.innerHTML = `<div class="oda-info-box alert alert-info" role="alert">${escapeHtml(msg)}</div>`;
+  }
 }
 
 function escapeHtml(value = "") {
