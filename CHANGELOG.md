@@ -1,5 +1,7 @@
 # Changelog
 
+## 1.25.0 - 2026-08-20
+- DOC: Pflicht-Link zum [Open Data App Store](https://open-data-app-store.de/) in der Referenzbeschreibung (Abschnitt „Open Data App“) ergänzt; lokale `odas-config/config.json` semantisch als HTML-Anker gespiegelt.
 
 ## 1.24.0 - 2026-08-20
 - **NEU:** Abschnitt „ODTA-Daten" in der Beschreibung (`beschreibung`, Store & App-Seite) — erklärt, was ODTA ist (Open Data Tourism Alliance, DACH-Initiative der nationalen Tourismusorganisationen, Domain Specifications auf schema.org-Basis) und welche ODTA-/schema.org-Felder die App auswertet und als JSON-LD exportiert
