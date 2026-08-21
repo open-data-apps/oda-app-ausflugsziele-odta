@@ -167,7 +167,7 @@ function renderShell() {
 async function loadData(state) {
   if (state.disposed) return; // F-70
 
-  const apiUrl = String(state.config.apiurl || "").trim();
+  const apiUrl = getOdasApiUrl(state.config, "ausflugsziele");
 
   if (state.allPois.length > 0) {
     state.root.querySelector("#oda-loading").style.display = "none";
@@ -989,6 +989,17 @@ async function fetchOdasResource(targetUrl, configdata = {}) {
       `Direkter Datenabruf fehlgeschlagen (${error.message}). Bitte prüfen Sie die Daten-URL und die CORS-Freigabe der Datenquelle.`,
     );
   }
+}
+
+/**
+ * Löst eine benannte Datenressource aus configdata.apiurls auf.
+ * Neue apiurls-Form (typ: "array"); das frühere skalare apiurl wird nicht mehr gelesen.
+ * @returns {string} getrimmte URL, oder "" für den Zustand "keine Quelle konfiguriert"
+ */
+function getOdasApiUrl(configdata, name) {
+  const liste = Array.isArray(configdata && configdata.apiurls) ? configdata.apiurls : [];
+  const treffer = liste.find((eintrag) => eintrag && eintrag.name === name);
+  return String((treffer && treffer.url) || "").trim();
 }
 
 async function fetchOdasJson(targetUrl, configdata = {}) {

@@ -25,7 +25,7 @@
     "<p>Die Daten stammen vom OpenData Portal Ostschweiz Tourismus und werden als schema.org-kompatible Places bereitgestellt.</p>",
     "<ul><li><strong>Open Data Portal:</strong> <a href=\"https://opendata.ost.contentdesk.io\" target=\"_blank\" rel=\"noopener\">OpenData Ostschweiz Tourismus</a></li><li><strong>Ressource/API-Endpunkt:</strong> <a href=\"https://opendata.ost.contentdesk.io/api/Place.json\" target=\"_blank\" rel=\"noopener\">Place.json API</a></li></ul>",
     "<h3>Andere ODTA-Datensätze verwenden</h3>",
-    "<p>Die App ist nicht auf die Ostschweiz festgelegt: Über das Konfigurationsfeld <code>apiurl</code> lässt sich jede kompatible ODTA-Quelle einbinden; <code>urlDaten</code> zeigt dann auf die zugehörige Portalseite.</p>",
+    "<p>Die App ist nicht auf die Ostschweiz festgelegt: Über das Konfigurationsfeld <code>apiurls.ausflugsziele</code> lässt sich jede kompatible ODTA-Quelle einbinden; <code>urlDaten</code> zeigt dann auf die zugehörige Portalseite.</p>",
     "<p>Voraussetzungen an die Quelle:</p>",
     "<ul><li>ein HTTPS-Endpunkt, der ein JSON-Array auf oberster Ebene liefert</li><li>Objekte im schema.org-/ODTA-Stil mit mindestens <code>@type</code> und <code>name</code></li><li><code>geo</code> mit <code>latitude</code>/<code>longitude</code> für die Kartendarstellung</li><li>CORS-Freigabe, da die App direkt aus dem Browser lädt</li></ul>",
     "<p>Beispiele kompatibler Datensätze desselben Portals:</p>",
@@ -59,7 +59,13 @@
     "Daten: Ostschweiz Tourismus | ",
     "Provided by: Ondics GmbH"
   ],
-  "apiurl": "https://opendata.ost.contentdesk.io/api/Place.json",
+  "apiurls": [
+    {
+      "name": "ausflugsziele",
+      "label": "URL zu den Places-Daten",
+      "url": "https://opendata.ost.contentdesk.io/api/Place.json"
+    }
+  ],
   "standardSprache": "de",
   "sprache": "de",
   "kpiKontext1": "Anzahl der aktuell angezeigten Orte im Verhältnis zu allen verfügbaren Orten im Datenbestand. Über die Filter lässt sich die Auswahl gezielt eingrenzen.",

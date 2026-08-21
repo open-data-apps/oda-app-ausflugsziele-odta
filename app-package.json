@@ -3,7 +3,7 @@
   "app-entwickler-name": "ondics-gmbh",
   "name-in-url": "ausflugsziele",
   "name": "Ausflugsziele-ODTA-Tourist-Attraction",
-  "version": "1.25.0",
+  "version": "1.26.0",
   "odas-app-icon": "assets/odas-app-icon.svg",
   "app-icon": "assets/odas-app-icon.svg",
   "kurzbeschreibung": "Ausflugsziele-App mit Karte, Filter, Detailansicht und ODTA-konformem JSON-LD-Export auf Basis der Open-Data-Quelle Ostschweiz Tourismus.",
@@ -50,7 +50,7 @@
     "",
     "## Andere ODTA-Datensätze verwenden",
     "",
-    "Die App ist nicht auf die Ostschweiz festgelegt: Über das Konfigurationsfeld `apiurl` lässt sich jede kompatible ODTA-Quelle einbinden; `urlDaten` zeigt dann auf die zugehörige Portalseite.",
+    "Die App ist nicht auf die Ostschweiz festgelegt: Über das Konfigurationsfeld `apiurls.ausflugsziele` lässt sich jede kompatible ODTA-Quelle einbinden; `urlDaten` zeigt dann auf die zugehörige Portalseite.",
     "",
     "Voraussetzungen an die Quelle:",
     "",
@@ -78,9 +78,19 @@
     "- [Alle Open Data Apps auf GitHub](https://github.com/open-data-apps) – die Organisation mit allen Apps",
     "- [oda-app-ausflugsziele-odta](https://github.com/open-data-apps/oda-app-ausflugsziele-odta) – das Repository dieser App"
   ],
-  "tags-funktion": ["Tourismus", "Karte", "POI", "Open Data"],
-  "tags-dateityp": ["JSON"],
-  "tags-datenart": ["Touristische Orte", "Sehenswürdigkeiten"],
+  "tags-funktion": [
+    "Tourismus",
+    "Karte",
+    "POI",
+    "Open Data"
+  ],
+  "tags-dateityp": [
+    "JSON"
+  ],
+  "tags-datenart": [
+    "Touristische Orte",
+    "Sehenswürdigkeiten"
+  ],
   "screenshots": [
     "assets/Desktop_Screenshot_1.png",
     "assets/Desktop_Screenshot_2.png",
@@ -197,7 +207,7 @@
         "",
         "## Andere ODTA-Datensätze verwenden",
         "",
-        "Die App ist nicht auf die Ostschweiz festgelegt: Über das Konfigurationsfeld `apiurl` lässt sich jede kompatible ODTA-Quelle einbinden; `urlDaten` zeigt dann auf die zugehörige Portalseite.",
+        "Die App ist nicht auf die Ostschweiz festgelegt: Über das Konfigurationsfeld `apiurls.ausflugsziele` lässt sich jede kompatible ODTA-Quelle einbinden; `urlDaten` zeigt dann auf die zugehörige Portalseite.",
         "",
         "Voraussetzungen an die Quelle:",
         "",
@@ -303,17 +313,24 @@
       "default": "(C) Copyright {{jahr}} | App & Daten: {{odp.anbieter.name}} | App-Entwickler: {{app.developer.name}} | ODAS: {{odas.betreiber.name}}",
       "erforderlich": "ja"
     },
-    "apiurl": {
-      "label": "URL zu den Places-Daten",
+    "apiurls": {
+      "label": "URLs zu Datenressourcen",
       "category": "datenherkunft",
-      "hilfe": "Von dieser URL werden die POI-Daten bezogen. Erwartet wird ein JSON-Array im schema.org-/ODTA-Format mit CORS-Freigabe. Neben Place.json funktionieren auch die übrigen Typ-Endpunkte desselben Portals (z. B. LodgingBusiness.json, LocalBusiness.json, FoodEstablishment.json) sowie andere CONTENTDESK-basierte Portale.",
+      "hilfe": "Direkter Download-, Datei- oder API-Endpunkt der tatsächlich verwendeten Datenquelle(n). Mehrere Einträge möglich.",
+      "typ": "array",
       "format": {
         "typ": "url",
-        "laenge": 255
+        "laenge": 500
       },
-      "default": "https://opendata.ost.contentdesk.io/api/Place.json",
-      "beispiel": "https://opendata.ost.contentdesk.io/api/Place.json",
-      "erforderlich": "ja"
+      "urls": [
+        {
+          "name": "ausflugsziele",
+          "label": "URL zu den Places-Daten",
+          "default": "https://opendata.ost.contentdesk.io/api/Place.json",
+          "beispiel": "https://opendata.ost.contentdesk.io/api/Place.json",
+          "erforderlich": "ja"
+        }
+      ]
     },
     "standardSprache": {
       "label": "Anzeigesprache für mehrsprachige Felder",
@@ -322,7 +339,12 @@
       "default": "de",
       "format": {
         "typ": "dropdown",
-        "optionen": ["de", "en", "fr", "it"]
+        "optionen": [
+          "de",
+          "en",
+          "fr",
+          "it"
+        ]
       },
       "erforderlich": "ja"
     },
@@ -333,7 +355,9 @@
       "default": "de",
       "format": {
         "typ": "dropdown",
-        "optionen": ["de"]
+        "optionen": [
+          "de"
+        ]
       },
       "erforderlich": "ja"
     },

@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.26.0 - 2026-08-21
+- **CHG:** Skalares `apiurl` durch das Array-Feld `apiurls` ersetzt (`typ: "array"`, Eintrag `ausflugsziele`). Neuer Standard portfolioweit; `apiurl` entfällt. `app.js` liest die Datenquelle jetzt über `getOdasApiUrl(configdata, "ausflugsziele")`.
+
 ## 1.25.0 - 2026-08-20
 - DOC: Pflicht-Link zum [Open Data App Store](https://open-data-app-store.de/) in der Referenzbeschreibung (Abschnitt „Open Data App“) ergänzt; lokale `odas-config/config.json` semantisch als HTML-Anker gespiegelt.
 

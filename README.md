@@ -137,7 +137,7 @@ Folgende Parameter werden bei der App-Instanzierung im ODAS konfiguriert:
 
 | Parameter | Beschreibung | Pflicht |
 | --- | --- | --- |
-| `apiurl` | URL zu den Places-Daten (schema.org-/ODTA-konformes JSON, siehe „Andere Datensätze verwenden" unten) | ja |
+| `apiurls` | URLs zu Datenressourcen. Eintrag `ausflugsziele`: URL zu den Places-Daten (schema.org-/ODTA-konformes JSON, siehe „Andere Datensätze verwenden" unten) | ja (Eintrag `ausflugsziele`) |
 | `urlDaten` | URL zur Katalog-Seite des Datensatzes im ODP | ja |
 | `standardSprache` | Anzeigesprache für mehrsprachige Felder (de/en/fr/it) | ja |
 | `sprache` | Sprache der App (`de`) | ja |
@@ -154,7 +154,7 @@ Folgende Parameter werden bei der App-Instanzierung im ODAS konfiguriert:
 
 ### Andere Datensätze verwenden
 
-Die App ist nicht an die Ostschweiz-Quelle gebunden. Jede Quelle, die per `apiurl` eingebunden
+Die App ist nicht an die Ostschweiz-Quelle gebunden. Jede Quelle, die per `apiurls.ausflugsziele` eingebunden
 wird, muss folgende Voraussetzungen erfüllen:
 
 - HTTPS-Endpunkt, der ein **JSON-Array auf oberster Ebene** liefert (kein CKAN-Wrapper, kein
