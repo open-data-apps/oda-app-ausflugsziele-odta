@@ -3,7 +3,7 @@
   "app-entwickler-name": "ondics-gmbh",
   "name-in-url": "ausflugsziele",
   "name": "Ausflugsziele-ODTA-Tourist-Attraction",
-  "app-version": "1.28.0",
+  "app-version": "1.29.0",
   "app-package-version": "2",
   "odas-app-icon": "assets/odas-app-icon.svg",
   "app-icon": "assets/odas-app-icon.svg",
@@ -278,7 +278,7 @@
       },
       "default": [
         "_multiline_",
-        "Diese App verarbeitet die angezeigten offenen Daten ausschließlich im Browser. Es werden keine Cookies gesetzt, keine Nutzungsstatistiken erhoben und keine Daten im Browser gespeichert.",
+        "Diese App verarbeitet die angezeigten offenen Daten ausschließlich im Browser. Es werden keine Cookies gesetzt, keine Nutzungsstatistiken erhoben und keine Daten im Browser gespeichert. Bei aktiviertem ODAS-Proxy (`proxyAktiv: ja`) werden Datenanfragen stattdessen über den Server des App-Stores geleitet.",
         "",
         "Alle für die Darstellung benötigten Programmbibliotheken werden mit der App ausgeliefert. Beim Aufruf werden dafür keine externen Server kontaktiert.",
         "",
@@ -332,6 +332,17 @@
           "erforderlich": "ja"
         }
       ]
+    },
+    "proxyAktiv": {
+      "label": "ODAS-Proxy aktivieren",
+      "category": "datenherkunft",
+      "hilfe": "Mit ja werden Datenabrufe über den ODAS-Proxy gesendet. Möglich, wenn die Quelle-Origin in den konfigurierten apiurls steht. Der Proxy selbst ist nur im ODAS-Live-System verfügbar; Entwicklung und Standalone verwenden nein.",
+      "default": "nein",
+      "format": {
+        "typ": "dropdown",
+        "optionen": ["nein", "ja"]
+      },
+      "erforderlich": "ja"
     },
     "standardSprache": {
       "label": "Anzeigesprache für mehrsprachige Felder",

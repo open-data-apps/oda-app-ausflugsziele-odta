@@ -181,11 +181,12 @@ typspezifische Felder (z. B. Veranstaltungszeiten bei `Event.json`) zeigt die Ap
 ---
 
 ## ODAS-Proxy
-Die Ostschweiz-Quelle erlaubt CORS und kann direkt per `fetch` geladen werden. Der ODAS-Proxy
-wird derzeit umgebaut und funktioniert nach der aktuellen Host-Regel ohnehin nicht mit dieser
-Fremdquelle (kein passendes ODP-Portal für `opendata.ost.contentdesk.io`; jeder
-`…/odp-data`-Aufruf würde mit HTTP 500 scheitern, ohne Fallback). Das Umschaltfeld
-`proxyAktiv` wird deshalb bewusst **nicht angeboten**; die App lädt ausschließlich direkt.
+Die Ostschweiz-Quelle erlaubt CORS und kann direkt per `fetch` geladen werden; der
+Direktmodus ist deshalb der Standard. Ueber den Konfigurationsschalter `proxyAktiv`
+(konfigurierbar je Instanz, Default `nein`) kann alternativ der ODAS-Proxy genutzt werden:
+Seit dem Plattform-Update vom 2026-08-24 erlaubt der Proxy Datenabrufe fuer jede
+Quelle-Origin, die in den konfigurierten `apiurls` steht — also auch fuer die Fremdquelle
+`opendata.ost.contentdesk.io`.
 
 ---
 
@@ -194,10 +195,11 @@ Fremdquelle (kein passendes ODP-Portal für `opendata.ost.contentdesk.io`; jeder
 Die App kann lokal, eigenstaendig hinter einem Traefik-Reverse-Proxy oder ueber den ODAS
 betrieben werden.
 
-### Datenabruf: kein `proxyAktiv`-Schalter
+### Datenabruf: Direktmodus oder ODAS-Proxy (`proxyAktiv`)
 
-Kein Proxy-Umschalter (siehe „ODAS-Proxy" oben). Die konfigurierte Datenquelle muss CORS
-freigeben; die Ostschweiz-Quelle tut das bereits.
+Standard ist der Direktmodus; die konfigurierte Datenquelle muss dafür CORS freigeben —
+die Ostschweiz-Quelle tut das bereits. Mit `proxyAktiv: ja` laufen die Abrufe über den
+ODAS-Proxy (siehe „ODAS-Proxy" oben).
 
 ### Standalone-Betrieb
 
