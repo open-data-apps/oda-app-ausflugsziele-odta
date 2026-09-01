@@ -23,7 +23,7 @@
     "<p>Welche Zusatzfelder (z. B. Öffnungszeiten, Bilder, mehrsprachige Beschreibungen) tatsächlich vorhanden sind, hängt vom jeweiligen Datensatz ab. Angaben zu Öffnungszeiten, Preisen oder kurzfristigen Änderungen sollten bei Bedarf zusätzlich bei der jeweiligen Stelle geprüft werden.</p>",
     "<h3>Datenquelle</h3>",
     "<p>Die Daten stammen vom OpenData Portal Ostschweiz Tourismus und werden als schema.org-kompatible Places bereitgestellt.</p>",
-    "<ul><li><strong>Open Data Portal:</strong> <a href=\"https://opendata.ost.contentdesk.io\" target=\"_blank\" rel=\"noopener\">OpenData Ostschweiz Tourismus</a></li><li><strong>Ressource/API-Endpunkt:</strong> <a href=\"https://opendata.ost.contentdesk.io/api/Place.json\" target=\"_blank\" rel=\"noopener\">Place.json API</a></li></ul>",
+    "<ul><li><strong>Open Data Portal:</strong> <a href=\"https://opendata.ost.contentdesk.io\" target=\"_blank\" rel=\"noopener\">OpenData Ostschweiz Tourismus</a></li><li><strong>Datensatz:</strong> <a href=\"https://opendata.ost.contentdesk.io/\" target=\"_blank\" rel=\"noopener\">OpenData Ostschweiz Tourismus</a></li><li><strong>Ressource/API-Endpunkt:</strong> <a href=\"https://opendata.ost.contentdesk.io/api/Place.json\" target=\"_blank\" rel=\"noopener\">Place.json API</a></li></ul>",
     "<h3>Andere ODTA-Datensätze verwenden</h3>",
     "<p>Die App ist nicht auf die Ostschweiz festgelegt: Über das Konfigurationsfeld <code>apiurls.ausflugsziele</code> lässt sich jede kompatible ODTA-Quelle einbinden; <code>urlDaten</code> zeigt dann auf die zugehörige Portalseite.</p>",
     "<p>Voraussetzungen an die Quelle:</p>",

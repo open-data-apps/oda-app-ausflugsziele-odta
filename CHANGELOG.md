@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.29.1 - 2026-09-01
+
+- **FIX:** `beschreibung` korrigiert – Ressourcen-Link nutzt jetzt `{{{appinstanz.apiurls.1}}}` statt `{{{appinstanz.urlDaten}}}api/Place.json`; Datensatz-Zeile ergänzt; alternative ODTA-Endpunkte als feste `https://…`-Links (keine Shortcode-Ableitung), Portfolioprüfung 33 Apps (Inventur 2026-09-01).
+
 ## 1.29.0 - 2026-08-25
 - **CHG:** `proxyAktiv`-Schalter wiedereingeführt (Default `nein`). Der ODAS-Proxy erlaubt seit Plattform-Update 2026-08-24 Datenabrufe für jede in den `apiurls` konfigurierte Quelle-Origin.
 
