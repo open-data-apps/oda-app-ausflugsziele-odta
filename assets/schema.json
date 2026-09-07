@@ -1,142 +1,232 @@
 {
+  "$schema": "https://frictionlessdata.io/schemas/table-schema.json",
+  "name": "oda-app-ausflugsziele",
+  "title": "Ausflugsziele",
   "fields": [
     {
       "name": "identifier",
-      "label": "UUID",
+      "title": "Kennung",
       "type": "string",
-      "description": "Eindeutiger Identifikator des Ortes (UUID der OpenData Ostschweiz)."
+      "description": "Eindeutige UUID des Eintrags.",
+      "constraints": {
+        "required": false
+      }
     },
     {
       "name": "@type",
-      "label": "Typ",
+      "title": "Typ",
       "type": "string",
-      "description": "schema.org-Typ des Ortes (z.B. Place, Waterfall, LandmarkOrHistoricalBuilding, Mountain, Tour)."
+      "description": "schema.org-Typ, hier Place.",
+      "constraints": {
+        "required": false
+      }
     },
     {
       "name": "name",
-      "label": "Name",
-      "type": "localized",
-      "languages": ["de", "en", "fr", "it"],
-      "description": "Name des Ortes, mehrsprachig."
+      "title": "Name",
+      "type": "object",
+      "description": "Name als Sprach-Map (de/en); die App wählt nach Standardsprache.",
+      "constraints": {
+        "required": false
+      }
     },
     {
       "name": "disambiguatingDescription",
-      "label": "Kurzbeschreibung",
-      "type": "localized",
-      "languages": ["de", "en", "fr", "it"],
-      "description": "Kurze, eindeutige Beschreibung des Ortes, mehrsprachig."
+      "title": "Kurzprofil",
+      "type": "object",
+      "description": "Kurzbeschreibung als Sprach-Map (de/en).",
+      "constraints": {
+        "required": false
+      }
     },
     {
       "name": "description",
-      "label": "Beschreibung",
-      "type": "localized",
-      "languages": ["de", "en", "fr", "it"],
-      "description": "Ausführliche Beschreibung des Ortes (HTML), mehrsprachig."
+      "title": "Beschreibung",
+      "type": "object",
+      "description": "Beschreibung als Sprach-Map (de/en).",
+      "constraints": {
+        "required": false
+      }
     },
     {
       "name": "address.addressLocality",
-      "label": "Ort",
+      "title": "Ort",
       "type": "string",
-      "description": "Ort/Gemeinde der Adresse."
+      "description": "Ortsname der Adresse.",
+      "constraints": {
+        "required": false
+      }
     },
     {
       "name": "address.postalCode",
-      "label": "PLZ",
-      "type": "string"
+      "title": "PLZ",
+      "type": "string",
+      "description": "Postleitzahl als Text.",
+      "constraints": {
+        "required": false
+      }
     },
     {
       "name": "address.streetAddress",
-      "label": "Straße",
-      "type": "string"
+      "title": "Straße",
+      "type": "string",
+      "description": "Straße und Hausnummer.",
+      "constraints": {
+        "required": false
+      }
     },
     {
       "name": "address.addressCountry.name",
-      "label": "Land",
+      "title": "Land",
       "type": "string",
-      "description": "Ländercode (z.B. ch)."
+      "description": "Länderkürzel aus dem Country-Objekt.",
+      "constraints": {
+        "required": false
+      }
     },
     {
       "name": "address.telephone",
-      "label": "Telefon",
-      "type": "string"
+      "title": "Telefon",
+      "type": "string",
+      "description": "Telefonnummer als Text.",
+      "constraints": {
+        "required": false
+      }
     },
     {
       "name": "address.url",
-      "label": "Website",
-      "type": "url"
+      "title": "Webseite",
+      "type": "string",
+      "description": "Webseite des Eintrags als URL-Text.",
+      "constraints": {
+        "required": false
+      }
     },
     {
       "name": "address.email",
-      "label": "E-Mail",
-      "type": "string"
+      "title": "E-Mail",
+      "type": "string",
+      "description": "E-Mail-Adresse als Text.",
+      "constraints": {
+        "required": false
+      }
     },
     {
       "name": "geo.latitude",
-      "label": "Breitengrad",
-      "type": "number"
+      "title": "Breite",
+      "type": "string",
+      "description": "Breitengrad als Text geliefert; die App wandelt mit Number() um.",
+      "constraints": {
+        "required": false
+      }
     },
     {
       "name": "geo.longitude",
-      "label": "Längengrad",
-      "type": "number"
+      "title": "Länge",
+      "type": "string",
+      "description": "Längengrad als Text geliefert; die App wandelt mit Number() um.",
+      "constraints": {
+        "required": false
+      }
     },
     {
       "name": "geo.altitude",
-      "label": "Höhe",
-      "type": "number"
+      "title": "Höhe",
+      "type": "number",
+      "description": "Höhenangabe, falls geliefert.",
+      "constraints": {
+        "required": false
+      }
     },
     {
       "name": "image",
-      "label": "Bilder",
+      "title": "Bilder",
       "type": "array",
-      "description": "Liste von ImageObject-Objekten mit contentUrl."
+      "description": "Liste von Bild-Objekten mit contentUrl.",
+      "constraints": {
+        "required": false
+      }
     },
     {
       "name": "license",
-      "label": "Lizenz",
+      "title": "Lizenz",
       "type": "string",
-      "description": "Datenlizenz (CC0, CC BY, CC BY-SA)."
+      "description": "Lizenz des Eintrags, z. B. CC0.",
+      "constraints": {
+        "required": false
+      }
     },
     {
       "name": "copyrightHolder",
-      "label": "Urheber",
-      "type": "string"
+      "title": "Rechteinhaber",
+      "type": "string",
+      "description": "Rechteinhaber der Daten.",
+      "constraints": {
+        "required": false
+      }
     },
     {
       "name": "dateModified",
-      "label": "Zuletzt geändert",
-      "type": "datetime"
+      "title": "Geändert am",
+      "type": "datetime",
+      "description": "Zeitpunkt der letzten Änderung (ISO-8601).",
+      "constraints": {
+        "required": false
+      }
     },
     {
       "name": "openingHours",
-      "label": "Öffnungszeiten",
-      "type": "string"
+      "title": "Öffnungszeiten",
+      "type": "object",
+      "description": "Öffnungszeiten als Sprach-Map.",
+      "constraints": {
+        "required": false
+      }
     },
     {
       "name": "openingHoursSpecification",
-      "label": "Öffnungszeiten (Spezifikation)",
-      "type": "object"
+      "title": "Öffnungszeiten-Regeln",
+      "type": "object",
+      "description": "Strukturierte Öffnungszeiten, falls geliefert.",
+      "constraints": {
+        "required": false
+      }
     },
     {
       "name": "amenityFeature",
-      "label": "Ausstattungsmerkmale",
-      "type": "array"
+      "title": "Ausstattung",
+      "type": "array",
+      "description": "Liste von Ausstattungsmerkmalen, falls geliefert.",
+      "constraints": {
+        "required": false
+      }
     },
     {
       "name": "additionalProperty",
-      "label": "Zusatzeigenschaften",
+      "title": "Zusatzdaten",
       "type": "object",
-      "description": "Freie Zusatzfelder (z.B. openstreetmap_id, categoryCode)."
+      "description": "Zusätzliche Eigenschaften, z. B. openstreetmap_id.",
+      "constraints": {
+        "required": false
+      }
     },
     {
       "name": "isAccessibleForFree",
-      "label": "Freier Eintritt",
-      "type": "boolean"
+      "title": "Kostenlos zugänglich",
+      "type": "boolean",
+      "description": "Freier Zugang, falls Angabe vorhanden.",
+      "constraints": {
+        "required": false
+      }
     },
     {
       "name": "priceRange",
-      "label": "Preisrahmen",
-      "type": "string"
+      "title": "Preislage",
+      "type": "array",
+      "description": "Preislage als Liste, z. B. [„moderate“].",
+      "constraints": {
+        "required": false
+      }
     }
   ]
 }

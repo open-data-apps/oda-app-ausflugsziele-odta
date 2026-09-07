@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.29.2 - 2026-09-07
+- **FIX:** Frictionless-Härtung: ungültige Typen korrigiert (`localized`→`object`, `url`→`string`, Geo-Koordinaten→`string` mit Umwandlungs-Hinweis, `priceRange`/`openingHours` an Messung angeglichen); `$schema` + 25 Titel/Beschreibungen. JSON-Pfad ist Validator-blind — Struktur-Match manuell verifiziert.
+
 ## 1.29.1 - 2026-09-01
 
 - **FIX:** `beschreibung` korrigiert – Ressourcen-Link nutzt jetzt `{{{appinstanz.apiurls.1}}}` statt `{{{appinstanz.urlDaten}}}api/Place.json`; Datensatz-Zeile ergänzt; alternative ODTA-Endpunkte als feste `https://…`-Links (keine Shortcode-Ableitung), Portfolioprüfung 33 Apps (Inventur 2026-09-01).
