@@ -175,7 +175,27 @@ async function loadData(state) {
   }
 
   if (!apiUrl || /^\{\{.*\}\}$/.test(apiUrl) || /^<.*>$/.test(apiUrl)) {
-    showInfo(state, "Es ist keine Datenquelle konfiguriert.");
+    renderOdasFehler(
+      state.root.querySelector("#oda-loading"),
+      new Error("Keine Datenquelle konfiguriert."),
+      {
+        url: apiUrl,
+        label: "Ausflugsziele-Datenquelle",
+        typLabel: "Statische Datei",
+        erwarteterTyp: "csv-zip",
+      },
+    );
+    return;
+  }
+  // Variante A (F-92): Typprüfung vor dem ersten Fetch.
+  const awTypWarn = validateUrlTypErwartung(apiUrl, "csv-zip");
+  if (awTypWarn) {
+    renderOdasFehler(state.root.querySelector("#oda-loading"), new Error(awTypWarn), {
+      url: apiUrl,
+      label: "Ausflugsziele-Datenquelle",
+      typLabel: "Statische Datei",
+      erwarteterTyp: "csv-zip",
+    });
     return;
   }
 
@@ -183,7 +203,12 @@ async function loadData(state) {
   try {
     raw = await fetchOdasResource(apiUrl, state.config);
   } catch (e) {
-    showError(state, e.message || String(e));
+    renderOdasFehler(state.root.querySelector("#oda-loading"), e, {
+      url: apiUrl,
+      label: "Ausflugsziele-Datenquelle",
+      typLabel: "Statische Datei",
+      erwarteterTyp: "csv-zip",
+    });
     throw e;
   }
   if (state.disposed) return; // F-70: Container evtl. waehrend des Fetches entsorgt worden

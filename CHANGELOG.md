@@ -1,6 +1,7 @@
 # Changelog
 
 ## 1.29.2 - 2026-09-07
+- **FIX:** Variante-A-Verdrahtung (F-92): Typprüfung (csv-zip/statische Datei) vor dem ersten Fetch; Quellen- und Ladefehler über `renderOdasFehler` (1.29.2 -> 1.29.3).
 - **FIX:** Frictionless-Härtung: ungültige Typen korrigiert (`localized`→`object`, `url`→`string`, Geo-Koordinaten→`string` mit Umwandlungs-Hinweis, `priceRange`/`openingHours` an Messung angeglichen); `$schema` + 25 Titel/Beschreibungen. JSON-Pfad ist Validator-blind — Struktur-Match manuell verifiziert.
 
 ## 1.29.1 - 2026-09-01
