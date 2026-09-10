@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.29.4 - 2026-09-10
+- **FIX (AU-B1):** `leafletLoading` behielt eine **abgelehnte** Promise im Modulcache — nach einem fehlgeschlagenen Leaflet-Ladeversuch scheiterte jeder weitere (auch in anderen Instanzen) sofort identisch, ohne Nachladen. Jetzt Reset über `resetLeafletLoading()`. Zusätzlich wird das Leaflet-CSS nur noch einmal eingehängt (vorher bei jedem Aufruf ein weiteres `<link>`).
+- **TECH (AU-B2):** `isLeerErgebnis` entfernt; `addToHead` gibt `""` statt `undefined` zurück.
+
 ## 1.29.3 - 2026-09-08
 - **FIX:** Variante-A-Verdrahtung (F-92): Typprüfung (csv-zip/statische Datei) vor dem ersten Fetch; Quellen- und Ladefehler über `renderOdasFehler` (1.29.2 -> 1.29.3).
 

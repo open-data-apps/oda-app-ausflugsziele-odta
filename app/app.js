@@ -525,14 +525,27 @@ function renderMap(state) {
 // App-Container: pro Instanz im state-Objekt (state.root); der Library-Load
 // bleibt ein Modul-Cache (unveränderlich, F-42)
 let leafletLoading = null;
+
+// AU-B1: Der Cache wird im Fehlerfall freigegeben. Vorher blieb die abgelehnte
+// Promise im Modul stehen — nach einem fehlgeschlagenen Ladeversuch scheiterte
+// jeder weitere (auch in anderen Instanzen) sofort identisch, ohne Nachladen.
+function resetLeafletLoading() {
+  if (!leafletLoading) return;
+  leafletLoading = null;
+}
+
 function loadLeaflet() {
   if (window.L) return Promise.resolve();
   if (leafletLoading) return leafletLoading;
   leafletLoading = new Promise((resolve, reject) => {
-    const link = document.createElement("link");
-    link.rel = "stylesheet";
-    link.href = "vendor/leaflet/leaflet.css";
-    document.head.appendChild(link);
+    // AU-B1: CSS nur einmal einhaengen (vorher bei jedem Aufruf ein weiteres Tag).
+    if (!document.getElementById("ausflug-leaflet-css")) {
+      const link = document.createElement("link");
+      link.id = "ausflug-leaflet-css";
+      link.rel = "stylesheet";
+      link.href = "vendor/leaflet/leaflet.css";
+      document.head.appendChild(link);
+    }
     const script = document.createElement("script");
     script.src = "vendor/leaflet/leaflet.js";
     script.onload = () => {
@@ -544,7 +557,10 @@ function loadLeaflet() {
       });
       resolve();
     };
-    script.onerror = () => reject(new Error("Leaflet konnte nicht geladen werden"));
+    script.onerror = () => {
+      resetLeafletLoading();
+      reject(new Error("Leaflet konnte nicht geladen werden"));
+    };
     document.head.appendChild(script);
   });
   return leafletLoading;
@@ -1198,14 +1214,7 @@ function renderOdasFehler(container, error, kontext = {}) {
   container.innerHTML = `<div class="alert ${alertClass}" role="alert"><strong>${escapeHtml(titel)}</strong><p class="mb-1">${escapeHtml(info.hinweis)}</p>${urlZeile}<details class="small"><summary>Details</summary><code>${escapeHtml(info.detail || String(error))}</code></details></div>`;
 }
 
-function isLeerErgebnis(json) {
-  if (!json) return true;
-  if (Array.isArray(json) && json.length === 0) return true;
-  if (Array.isArray(json.records) && json.records.length === 0) return true;
-  if (Array.isArray(json.results) && json.results.length === 0) return true;
-  if (json.result && Array.isArray(json.result.records) && json.result.records.length === 0) return true;
-  return false;
+
+function addToHead() {
+  return ``;
 }
-
-
-function addToHead() {}
