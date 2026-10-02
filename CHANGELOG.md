@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.29.5 - 2026-10-02
+- ENH: Verwendete ODAS-Dienste in `odas-services` deklariert.
+
 ## 1.29.4 - 2026-09-10
 - **FIX (AU-B1):** `leafletLoading` behielt eine **abgelehnte** Promise im Modulcache — nach einem fehlgeschlagenen Leaflet-Ladeversuch scheiterte jeder weitere (auch in anderen Instanzen) sofort identisch, ohne Nachladen. Jetzt Reset über `resetLeafletLoading()`. Zusätzlich wird das Leaflet-CSS nur noch einmal eingehängt (vorher bei jedem Aufruf ein weiteres `<link>`).
 - **TECH (AU-B2):** `isLeerErgebnis` entfernt; `addToHead` gibt `""` statt `undefined` zurück.
