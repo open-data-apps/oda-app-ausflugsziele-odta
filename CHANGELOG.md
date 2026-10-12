@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.30.0 - 2026-10-12
+- FIX: Exportaktionen sind dem jeweiligen geöffneten Ort zugeordnet; mehrsprachige JSON-LD-Werte und Metadaten bleiben maschinenlesbar erhalten, das Quelländerungsdatum wird korrekt benannt.
+- FIX: HTML-Beschreibungen sicher aufbereitet; Absätze, Listen, Hervorhebungen und HTTP(S)-Links bleiben lesbar, aktive Inhalte werden verworfen.
+- FIX: Kartenmarker öffnen den passenden Ort auch auf einer anderen gefilterten Listenseite.
+- FIX: Mobiler Suchleerraum und unsichtbares Reset-Symbol behoben; Kontakttexte und Abstände vereinheitlicht, Telefon/E-Mail anklickbar.
+- ENH: Methodik, verwandte Links und Kennzahlenerklärungen einklappbar; lange Beschreibungen mit „Mehr lesen“ und vollständigem Export.
+- ENH: Sichtbare Filterlabels, Aufklappzustände und verständliche Ausstattungsbezeichnungen; Desktop-/Mobile-Screenshots aktualisiert.
+
+## 1.29.6 - 2026-10-08
+- FIX: F-112: Unbekannte Antwortstrukturen als Formatfehler statt als leere Daten anzeigen; bekannte leere Listen bleiben gültig.
+
 ## 1.29.5 - 2026-10-02
 - ENH: Verwendete ODAS-Dienste in `odas-services` deklariert.
 

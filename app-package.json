@@ -3,42 +3,42 @@
   "app-entwickler-name": "ondics-gmbh",
   "name-in-url": "ausflugsziele",
   "name": "Ausflugsziele-ODTA-Tourist-Attraction",
-  "app-version": "1.29.5",
+  "app-version": "1.30.0",
   "app-package-version": "2",
   "odas-app-icon": "assets/odas-app-icon.svg",
   "app-icon": "assets/odas-app-icon.svg",
-  "kurzbeschreibung": "Ausflugsziele-App mit Karte, Filter, Detailansicht und ODTA-konformem JSON-LD-Export auf Basis der Open-Data-Quelle Ostschweiz Tourismus.",
+  "kurzbeschreibung": "Ausflugsziele-App mit Karte, Filter, Detailansicht und strukturiertem JSON-LD-Export auf Basis der Open-Data-Quelle Ostschweiz Tourismus.",
   "beschreibung": [
     "_multiline_",
     "Die Ausflugsziele-App macht touristische Orte aus der Ostschweiz als Karte, Liste und Detailansicht erlebbar.",
     "",
-    "Sie liest touristische Daten nach dem ODTA-Standard (schema.org-basiert) und kann ausgewählte Orte zusätzlich als ODTA-konformes JSON-LD ausgeben.",
+    "Sie liest touristische Daten nach dem ODTA-Standard (schema.org-basiert) und kann ausgewählte Orte zusätzlich als strukturiertes JSON-LD ausgeben.",
     "",
-    "## Inhalte",
+    "### Inhalte",
     "",
     "Die App zeigt Sehenswürdigkeiten, Ausflugsziele und weitere Orte mit Namen, Beschreibung, Koordinaten, Kategorien und verfügbaren Zusatzinformationen.",
     "",
-    "Filter, Kartenansicht und Detailseiten helfen dabei, passende Ziele schneller zu finden und die Daten maschinenlesbar weiterzuverwenden.",
+    "Filter, Kartenansicht und Detailseiten helfen dabei, passende Ziele schneller zu finden und die Daten maschinenlesbar weiterzuverwenden.\n\nBeschreibungen behalten sichere Absätze, Listen, Hervorhebungen und Links. Bei mehr als 600 sichtbaren Zeichen erscheint eine Vorschau mit „Mehr lesen“. Adresse und Kontaktdaten sind einheitlich lesbar; Telefon und E-Mail lassen sich direkt nutzen.\n\nKennzahlenerklärungen, Methodik und verwandte Links lassen sich bei Bedarf ausklappen. Die Karte öffnet gewählte Orte auch auf weiteren Listenseiten. Bekannte Ausstattungsmerkmale werden verständlich bezeichnet.",
     "",
-    "## Nutzung",
+    "### Nutzung",
     "",
     "Wählen Sie Orte in der Karte oder Liste aus, grenzen Sie die Ansicht über Filter ein und öffnen Sie Details zu einzelnen Ausflugszielen.",
     "",
     "Die angezeigten Informationen stammen aus der Datenquelle; Öffnungszeiten, Preise oder kurzfristige Änderungen sollten bei Bedarf zusätzlich bei der jeweiligen Stelle geprüft werden.",
     "",
-    "## Für wen ist diese App?",
+    "### Für wen ist diese App?",
     "",
     "Die App richtet sich an Bürger:innen, Gäste, Tourismusstellen, Datenredaktionen und Entwickler:innen, die touristische Open Data verständlich erkunden oder nachnutzen möchten. Besondere Datenkenntnisse sind für die Nutzung nicht erforderlich.",
     "",
-    "## ODTA-Daten",
+    "### ODTA-Daten",
     "",
     "Die App liest touristische Orte im ODTA-Format: Die Open Data Tourism Alliance (ODTA) ist eine 2021 gegründete Initiative der nationalen Tourismusorganisationen aus Deutschland, Österreich und der Schweiz mit rund 20 Partnern auf Bundesebene. Sie standardisiert semantische Datenmodelle für touristische Informationen auf Basis von schema.org und veröffentlicht diese als [Domain Specifications](https://odta.io/domain-specification-browser/).",
     "",
-    "Aus den ODTA-/schema.org-Feldern wertet die App Typ und Untertyp, mehrsprachige Namen und Beschreibungen, Adresse, Geokoordinaten, Bilder, Ausstattungsmerkmale, Öffnungszeiten, Lizenz und Änderungsdatum aus. Für einzelne Orte lässt sich daraus zusätzlich ein ODTA-konformes JSON-LD-Dokument als `schema:TouristAttraction` exportieren, das sich auf eigenen Webseiten oder in Datenpipelines weiterverwenden lässt.",
+    "Aus den ODTA-/schema.org-Feldern wertet die App Typ und Untertyp, mehrsprachige Namen und Beschreibungen, Adresse, Geokoordinaten, Bilder, Ausstattungsmerkmale, Öffnungszeiten, Lizenz und Änderungsdatum aus. Für einzelne Orte lässt sich daraus zusätzlich ein strukturiertes JSON-LD-Dokument als `schema:TouristAttraction` exportieren, das sich auf eigenen Webseiten oder in Datenpipelines weiterverwenden lässt.",
     "",
     "## Methodik",
     "",
-    "Die Rohdaten liegen im Open Data Portal Ostschweiz Tourismus bereits in einem schema.org-nahen Place-Format vor. Die App ruft sie direkt von der Datenquelle ab und normalisiert sie für die Anzeige: Koordinaten werden für die Karte aufbereitet, Kategorien und Sprachen für die Filter ausgewertet, und einzelne Orte lassen sich zusätzlich als ODTA-konformes JSON-LD exportieren.",
+    "Die Rohdaten liegen im Open Data Portal Ostschweiz Tourismus bereits in einem schema.org-nahen Place-Format vor. Die App ruft sie direkt von der Datenquelle ab und normalisiert sie für die Anzeige: Koordinaten werden für die Karte aufbereitet, Kategorien und Sprachen für die Filter ausgewertet, und einzelne Orte lassen sich zusätzlich als strukturiertes JSON-LD exportieren.",
     "",
     "Welche Zusatzfelder (z. B. Öffnungszeiten, Bilder, mehrsprachige Beschreibungen) tatsächlich vorhanden sind, hängt vom jeweiligen Datensatz ab. Angaben zu Öffnungszeiten, Preisen oder kurzfristigen Änderungen sollten bei Bedarf zusätzlich bei der jeweiligen Stelle geprüft werden.",
     "",
@@ -50,7 +50,7 @@
     "- **Datensatz:** [OpenData Ostschweiz Tourismus]({{{appinstanz.urlDaten}}})",
     "- **Ressource/API-Endpunkt:** [Place.json API]({{{appinstanz.apiurls.1}}})",
     "",
-    "## Andere ODTA-Datensätze verwenden",
+    "### Andere ODTA-Datensätze verwenden",
     "",
     "Die App ist nicht auf die Ostschweiz festgelegt: Über das Konfigurationsfeld `apiurls.ausflugsziele` lässt sich jede kompatible ODTA-Quelle einbinden; `urlDaten` zeigt dann auf die zugehörige Portalseite.",
     "",
@@ -96,7 +96,8 @@
   "screenshots": [
     "assets/Desktop_Screenshot_1.png",
     "assets/Desktop_Screenshot_2.png",
-    "assets/Desktop_Screenshot_3.png"
+    "assets/Desktop_Screenshot_3.png",
+    "assets/Mobile_Screenshot.png"
   ],
   "daten": {
     "beschreibung": "schema.org-konforme Places (POIs) des OpenData-Portals Ostschweiz Tourismus.",
@@ -171,33 +172,33 @@
         "_multiline_",
         "Die Ausflugsziele-App macht touristische Orte aus der Ostschweiz als Karte, Liste und Detailansicht erlebbar.",
         "",
-        "Sie liest touristische Daten nach dem ODTA-Standard (schema.org-basiert) und kann ausgewählte Orte zusätzlich als ODTA-konformes JSON-LD ausgeben.",
+        "Sie liest touristische Daten nach dem ODTA-Standard (schema.org-basiert) und kann ausgewählte Orte zusätzlich als strukturiertes JSON-LD ausgeben.",
         "",
-        "## Inhalte",
+        "### Inhalte",
         "",
         "Die App zeigt Sehenswürdigkeiten, Ausflugsziele und weitere Orte mit Namen, Beschreibung, Koordinaten, Kategorien und verfügbaren Zusatzinformationen.",
         "",
-        "Filter, Kartenansicht und Detailseiten helfen dabei, passende Ziele schneller zu finden und die Daten maschinenlesbar weiterzuverwenden.",
+        "Filter, Kartenansicht und Detailseiten helfen dabei, passende Ziele schneller zu finden und die Daten maschinenlesbar weiterzuverwenden.\n\nBeschreibungen behalten sichere Absätze, Listen, Hervorhebungen und Links. Bei mehr als 600 sichtbaren Zeichen erscheint eine Vorschau mit „Mehr lesen“. Adresse und Kontaktdaten sind einheitlich lesbar; Telefon und E-Mail lassen sich direkt nutzen.\n\nKennzahlenerklärungen, Methodik und verwandte Links lassen sich bei Bedarf ausklappen. Die Karte öffnet gewählte Orte auch auf weiteren Listenseiten. Bekannte Ausstattungsmerkmale werden verständlich bezeichnet.",
         "",
-        "## Nutzung",
+        "### Nutzung",
         "",
         "Wählen Sie Orte in der Karte oder Liste aus, grenzen Sie die Ansicht über Filter ein und öffnen Sie Details zu einzelnen Ausflugszielen.",
         "",
         "Die angezeigten Informationen stammen aus der Datenquelle; Öffnungszeiten, Preise oder kurzfristige Änderungen sollten bei Bedarf zusätzlich bei der jeweiligen Stelle geprüft werden.",
         "",
-        "## Für wen ist diese App?",
+        "### Für wen ist diese App?",
         "",
         "Die App richtet sich an Bürger:innen, Gäste, Tourismusstellen, Datenredaktionen und Entwickler:innen, die touristische Open Data verständlich erkunden oder nachnutzen möchten. Besondere Datenkenntnisse sind für die Nutzung nicht erforderlich.",
         "",
-        "## ODTA-Daten",
+        "### ODTA-Daten",
         "",
         "Die App liest touristische Orte im ODTA-Format: Die Open Data Tourism Alliance (ODTA) ist eine 2021 gegründete Initiative der nationalen Tourismusorganisationen aus Deutschland, Österreich und der Schweiz mit rund 20 Partnern auf Bundesebene. Sie standardisiert semantische Datenmodelle für touristische Informationen auf Basis von schema.org und veröffentlicht diese als [Domain Specifications](https://odta.io/domain-specification-browser/).",
         "",
-        "Aus den ODTA-/schema.org-Feldern wertet die App Typ und Untertyp, mehrsprachige Namen und Beschreibungen, Adresse, Geokoordinaten, Bilder, Ausstattungsmerkmale, Öffnungszeiten, Lizenz und Änderungsdatum aus. Für einzelne Orte lässt sich daraus zusätzlich ein ODTA-konformes JSON-LD-Dokument als `schema:TouristAttraction` exportieren, das sich auf eigenen Webseiten oder in Datenpipelines weiterverwenden lässt.",
+        "Aus den ODTA-/schema.org-Feldern wertet die App Typ und Untertyp, mehrsprachige Namen und Beschreibungen, Adresse, Geokoordinaten, Bilder, Ausstattungsmerkmale, Öffnungszeiten, Lizenz und Änderungsdatum aus. Für einzelne Orte lässt sich daraus zusätzlich ein strukturiertes JSON-LD-Dokument als `schema:TouristAttraction` exportieren, das sich auf eigenen Webseiten oder in Datenpipelines weiterverwenden lässt.",
         "",
         "## Methodik",
         "",
-        "Die Rohdaten liegen im Open Data Portal Ostschweiz Tourismus bereits in einem schema.org-nahen Place-Format vor. Die App ruft sie direkt von der Datenquelle ab und normalisiert sie für die Anzeige: Koordinaten werden für die Karte aufbereitet, Kategorien und Sprachen für die Filter ausgewertet, und einzelne Orte lassen sich zusätzlich als ODTA-konformes JSON-LD exportieren.",
+        "Die Rohdaten liegen im Open Data Portal Ostschweiz Tourismus bereits in einem schema.org-nahen Place-Format vor. Die App ruft sie direkt von der Datenquelle ab und normalisiert sie für die Anzeige: Koordinaten werden für die Karte aufbereitet, Kategorien und Sprachen für die Filter ausgewertet, und einzelne Orte lassen sich zusätzlich als strukturiertes JSON-LD exportieren.",
         "",
         "Welche Zusatzfelder (z. B. Öffnungszeiten, Bilder, mehrsprachige Beschreibungen) tatsächlich vorhanden sind, hängt vom jeweiligen Datensatz ab. Angaben zu Öffnungszeiten, Preisen oder kurzfristigen Änderungen sollten bei Bedarf zusätzlich bei der jeweiligen Stelle geprüft werden.",
         "",
@@ -209,7 +210,7 @@
         "- **Datensatz:** [OpenData Ostschweiz Tourismus]({{{appinstanz.urlDaten}}})",
         "- **Ressource/API-Endpunkt:** [Place.json API]({{{appinstanz.apiurls.1}}})",
         "",
-        "## Andere ODTA-Datensätze verwenden",
+        "### Andere ODTA-Datensätze verwenden",
         "",
         "Die App ist nicht auf die Ostschweiz festgelegt: Über das Konfigurationsfeld `apiurls.ausflugsziele` lässt sich jede kompatible ODTA-Quelle einbinden; `urlDaten` zeigt dann auf die zugehörige Portalseite.",
         "",
@@ -382,7 +383,7 @@
     "kpiKontext1": {
       "label": "KPI-Kontexttext: Gesamte Orte",
       "category": "beschreibung",
-      "hilfe": "Erklärungstext zur KPI 'Gesamte Orte'. Leer lassen, um keinen Kontext anzuzeigen.",
+      "hilfe": "Über den Info-Schalter aufklappbarer Erklärungstext zur KPI 'Gesamte Orte'. Leer lassen, um keinen Kontext anzuzeigen.",
       "format": {
         "typ": "markdown"
       },
@@ -396,7 +397,7 @@
     "kpiKontext2": {
       "label": "KPI-Kontexttext: Ortstypen",
       "category": "beschreibung",
-      "hilfe": "Erklärungstext zur KPI 'Ortstypen'. Leer lassen, um keinen Kontext anzuzeigen.",
+      "hilfe": "Über den Info-Schalter aufklappbarer Erklärungstext zur KPI 'Ortstypen'. Leer lassen, um keinen Kontext anzuzeigen.",
       "format": {
         "typ": "markdown"
       },
@@ -410,7 +411,7 @@
     "kpiKontext3": {
       "label": "KPI-Kontexttext: Lizenzen",
       "category": "beschreibung",
-      "hilfe": "Erklärungstext zur KPI 'Lizenzen'. Leer lassen, um keinen Kontext anzuzeigen.",
+      "hilfe": "Über den Info-Schalter aufklappbarer Erklärungstext zur KPI 'Lizenzen'. Leer lassen, um keinen Kontext anzuzeigen.",
       "format": {
         "typ": "markdown"
       },
@@ -424,7 +425,7 @@
     "kpiKontext4": {
       "label": "KPI-Kontexttext: Sprachen",
       "category": "beschreibung",
-      "hilfe": "Erklärungstext zur KPI 'Sprachen'. Leer lassen, um keinen Kontext anzuzeigen.",
+      "hilfe": "Über den Info-Schalter aufklappbarer Erklärungstext zur KPI 'Sprachen'. Leer lassen, um keinen Kontext anzuzeigen.",
       "format": {
         "typ": "markdown"
       },
@@ -438,11 +439,11 @@
     "datenquelleHinweis": {
       "label": "Methodik-Kasten",
       "category": "beschreibung",
-      "hilfe": "Erläutert Datenherkunft und Methodik. Wird als Hinweis-Kasten angezeigt. Leer lassen, um den Kasten auszublenden.",
+      "hilfe": "Erläutert Datenherkunft und Methodik. Wird als standardmäßig eingeklappter Hinweis-Kasten angezeigt. Leer lassen, um den Kasten auszublenden.",
       "format": {
         "typ": "markdown"
       },
-      "default": "Die Daten stammen vom OpenData Portal Ostschweiz Tourismus und liegen bereits im schema.org-nahen Place-Format vor. Die App normalisiert die Orte für Karte, Filter, Detailansicht und ODTA-konformes JSON-LD; einzelne Zusatzfelder hängen vom jeweiligen Datensatz ab.",
+      "default": "Die Daten stammen vom OpenData Portal Ostschweiz Tourismus und liegen bereits im schema.org-nahen Place-Format vor. Die App normalisiert die Orte für Karte, Filter, Detailansicht und strukturiertes JSON-LD; einzelne Zusatzfelder hängen vom jeweiligen Datensatz ab.",
       "erforderlich": "nein"
     },
     "datenStand": {
@@ -459,7 +460,7 @@
     "verwandteLinks": {
       "label": "Verwandte Links",
       "category": "beschreibung",
-      "hilfe": "Links zu verwandten Themen und Quellen. Leer lassen, um den Block auszublenden.",
+      "hilfe": "Aufklappbare Links zu verwandten Themen und Quellen. Wird verwendet, wenn Weiterführende Links leer sind. Leer lassen, um den Block auszublenden.",
       "format": {
         "typ": "markdown"
       },
@@ -478,7 +479,7 @@
     "weiterfuehrendeLinks": {
       "label": "Weiterführende Links",
       "category": "beschreibung",
-      "hilfe": "Links zu verwandten Datensätzen/Hintergrundquellen (Markdown/HTML). Leer = Abschnitt ausgeblendet.",
+      "hilfe": "Aufklappbare Links zu verwandten Datensätzen/Hintergrundquellen (Markdown, kein HTML). Hat Vorrang vor Verwandte Links. Leer = Fallback auf Verwandte Links.",
       "format": {
         "typ": "markdown"
       },

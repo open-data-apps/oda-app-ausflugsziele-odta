@@ -100,7 +100,7 @@ function app(configdata = {}, enclosingHtmlDivElement) {
   }
   ausflugInstances.set(enclosingHtmlDivElement, state);
 
-  state.root.innerHTML = renderShell();
+  state.root.innerHTML = renderShell(state);
 
   bindFilterControls(state);
   bindListControls(state);
@@ -126,7 +126,7 @@ function pickLang(available, preferred) {
   return available[0] || "de";
 }
 
-function renderShell() {
+function renderShell(state) {
   return `
     <section id="oda-poi-app" class="oda-poi-app">
       <div id="oda-loading" class="oda-loading">
@@ -139,14 +139,26 @@ function renderShell() {
       <div id="oda-kpi" class="oda-kpi-grid"></div>
 
       <div class="oda-toolbar mb-3">
-        <div class="oda-search-wrap">
-          <svg class="oda-search-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-          <input type="search" id="oda-search" class="oda-search-input" placeholder="Ort, Name oder Beschreibung suchen…">
+        <div class="oda-search-field oda-filter-field">
+          <label for="oda-search-${state.uid}">Suche</label>
+          <div class="oda-search-wrap">
+            <svg class="oda-search-icon" aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input type="search" id="oda-search-${state.uid}" data-role="oda-search" class="oda-search-input" placeholder="Ort, Name oder Beschreibung suchen…">
+          </div>
         </div>
-        <select id="oda-filter-type" class="oda-filter-select"></select>
-        <select id="oda-filter-language" class="oda-filter-select"></select>
-        <select id="oda-filter-license" class="oda-filter-select"></select>
-        <button type="button" id="oda-filter-reset" class="oda-reset-btn" title="Filter zurücksetzen">
+        <div class="oda-filter-field">
+          <label for="oda-filter-type-${state.uid}">Ortstyp</label>
+          <select id="oda-filter-type-${state.uid}" data-role="oda-filter-type" class="oda-filter-select"></select>
+        </div>
+        <div class="oda-filter-field">
+          <label for="oda-filter-language-${state.uid}">Sprache</label>
+          <select id="oda-filter-language-${state.uid}" data-role="oda-filter-language" class="oda-filter-select"></select>
+        </div>
+        <div class="oda-filter-field">
+          <label for="oda-filter-license-${state.uid}">Lizenz</label>
+          <select id="oda-filter-license-${state.uid}" data-role="oda-filter-license" class="oda-filter-select"></select>
+        </div>
+        <button type="button" id="oda-filter-reset" class="oda-reset-btn" title="Filter zurücksetzen" aria-label="Filter zurücksetzen">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
         </button>
         <span id="oda-filter-count" class="oda-filter-count"></span>
@@ -221,7 +233,13 @@ async function loadData(state) {
     throw e;
   }
 
-  state.allPois = Array.isArray(parsed) ? parsed : [];
+  // F-112: Places.json ist eine Liste; unbekannte Objekte sind kein Leerbestand.
+  if (!Array.isArray(parsed)) {
+    const message = "Unbekanntes Antwortformat: Liste von Ausflugszielen erwartet.";
+    showError(state, message);
+    throw new Error(message);
+  }
+  state.allPois = parsed;
   state.root.querySelector("#oda-loading").style.display = "none";
 
   if (state.allPois.length === 0) {
@@ -262,50 +280,50 @@ function computeAvailableFacets(state) {
 }
 
 function renderFilterOptions(state) {
-  const typeSel = state.root.querySelector("#oda-filter-type");
-  const langSel = state.root.querySelector("#oda-filter-language");
-  const licSel = state.root.querySelector("#oda-filter-license");
+  const typeSel = state.root.querySelector('[data-role="oda-filter-type"]');
+  const langSel = state.root.querySelector('[data-role="oda-filter-language"]');
+  const licSel = state.root.querySelector('[data-role="oda-filter-license"]');
 
   typeSel.innerHTML =
-    `<option value="">Alle</option>` +
+    `<option value="">Alle Ortstypen</option>` +
     state.availableTypes.map((t) => `<option value="${escapeAttr(t)}">${escapeHtml(t)}</option>`).join("");
 
   langSel.innerHTML =
-    `<option value="">Alle</option>` +
+    `<option value="">Alle Sprachen</option>` +
     state.availableLanguages.map((l) => `<option value="${escapeAttr(l)}">${escapeHtml(l)}</option>`).join("");
 
   licSel.innerHTML =
-    `<option value="">Alle</option>` +
+    `<option value="">Alle Lizenzen</option>` +
     state.availableLicenses.map((l) => `<option value="${escapeAttr(l)}">${escapeHtml(l)}</option>`).join("");
 }
 
 function bindFilterControls(state) {
-  state.root.querySelector("#oda-search").addEventListener("input", (e) => {
+  state.root.querySelector('[data-role="oda-search"]').addEventListener("input", (e) => {
     state.filters.search = e.target.value.trim().toLowerCase();
     state.page = 0;
     applyFilters(state);
   });
-  state.root.querySelector("#oda-filter-type").addEventListener("change", (e) => {
+  state.root.querySelector('[data-role="oda-filter-type"]').addEventListener("change", (e) => {
     state.filters.type = e.target.value;
     state.page = 0;
     applyFilters(state);
   });
-  state.root.querySelector("#oda-filter-language").addEventListener("change", (e) => {
+  state.root.querySelector('[data-role="oda-filter-language"]').addEventListener("change", (e) => {
     state.filters.language = e.target.value;
     state.page = 0;
     applyFilters(state);
   });
-  state.root.querySelector("#oda-filter-license").addEventListener("change", (e) => {
+  state.root.querySelector('[data-role="oda-filter-license"]').addEventListener("change", (e) => {
     state.filters.license = e.target.value;
     state.page = 0;
     applyFilters(state);
   });
   state.root.querySelector("#oda-filter-reset").addEventListener("click", () => {
     state.filters = { search: "", type: "", language: "", license: "" };
-    state.root.querySelector("#oda-search").value = "";
-    state.root.querySelector("#oda-filter-type").value = "";
-    state.root.querySelector("#oda-filter-language").value = "";
-    state.root.querySelector("#oda-filter-license").value = "";
+    state.root.querySelector('[data-role="oda-search"]').value = "";
+    state.root.querySelector('[data-role="oda-filter-type"]').value = "";
+    state.root.querySelector('[data-role="oda-filter-language"]').value = "";
+    state.root.querySelector('[data-role="oda-filter-license"]').value = "";
     state.page = 0;
     applyFilters(state);
   });
@@ -386,8 +404,11 @@ function renderKpis(state) {
       (t) => `
       <div class="oda-kpi-card">
         <div class="oda-kpi-value">${t.value}${t.total ? ` <span class="oda-kpi-total">/ ${t.total}</span>` : ""}</div>
-        <div class="oda-kpi-label">${escapeHtml(t.label)}</div>
-        ${t.ctx ? `<div class="oda-kpi-context">${t.ctx}</div>` : ""}
+        <div class="oda-kpi-label-row">
+          <div class="oda-kpi-label">${escapeHtml(t.label)}</div>
+          ${t.ctx ? `<button type="button" class="oda-kpi-info-toggle" data-bs-toggle="collapse" data-bs-target="#oda-kpi-context-${state.uid}-${t.id}" aria-expanded="false" aria-controls="oda-kpi-context-${state.uid}-${t.id}" aria-label="Erklärung zu ${escapeAttr(t.label)}"><span aria-hidden="true">ⓘ</span></button>` : ""}
+        </div>
+        ${t.ctx ? `<div class="collapse" id="oda-kpi-context-${state.uid}-${t.id}"><div class="oda-kpi-context">${t.ctx}</div></div>` : ""}
       </div>`
     )
     .join("");
@@ -420,7 +441,7 @@ function renderList(state) {
           : `<div class="oda-list-thumb oda-list-thumb-placeholder"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>`;
         return `
           <div class="oda-list-item-wrap" data-poi-id="${escapeAttr(p.identifier)}">
-            <button type="button" class="oda-list-item" data-poi-id="${escapeAttr(p.identifier)}">
+            <button type="button" class="oda-list-item" data-poi-id="${escapeAttr(p.identifier)}" aria-expanded="false" aria-controls="oda-detail-${state.uid}-${state.allPois.indexOf(p)}">
               ${thumb}
               <div class="oda-list-body">
                 <div class="oda-list-title">${escapeHtml(name)}</div>
@@ -428,7 +449,7 @@ function renderList(state) {
               </div>
               <svg class="oda-list-chevron" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
             </button>
-            <div class="oda-list-detail" hidden></div>
+            <div class="oda-list-detail" id="oda-detail-${state.uid}-${state.allPois.indexOf(p)}" hidden></div>
           </div>`;
       })
       .join("") +
@@ -572,6 +593,7 @@ function toggleDetail(state, poiId) {
   const detail = wrap.querySelector(".oda-list-detail");
   const chevron = wrap.querySelector(".oda-list-chevron");
   const isOpen = !detail.hidden;
+  wrap.querySelector(".oda-list-item").setAttribute("aria-expanded", String(!isOpen));
   if (isOpen) {
     detail.hidden = true;
     detail.innerHTML = "";
@@ -582,7 +604,8 @@ function toggleDetail(state, poiId) {
     if (!p) return;
     detail.innerHTML = detailHtml(state, p);
     detail.hidden = false;
-    bindDetailControls(state, p);
+    bindDetailControls(state, p, detail);
+    bindDescriptionControls(detail);
     bindGallery(detail);
     wrap.classList.add("oda-list-item-open");
     if (chevron) chevron.style.transform = "rotate(90deg)";
@@ -590,13 +613,21 @@ function toggleDetail(state, poiId) {
 }
 
 function scrollToPoi(state, poiId) {
+  if (state.disposed) return;
+  const index = state.filteredPois.findIndex((p) => String(p.identifier) === String(poiId));
+  if (index < 0) return;
+  const page = Math.floor(index / state.pageSize);
+  if (state.page !== page) {
+    state.page = page;
+    renderList(state);
+  }
   const wrap = state.root.querySelector(`.oda-list-item-wrap[data-poi-id="${cssEscape(poiId)}"]`);
   if (!wrap) return;
-  wrap.scrollIntoView({ behavior: "smooth", block: "center" });
   const detail = wrap.querySelector(".oda-list-detail");
   if (detail && detail.hidden) {
     toggleDetail(state, poiId);
   }
+  wrap.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "center" });
   wrap.classList.add("oda-list-item-flash");
   setTimeout(() => wrap.classList.remove("oda-list-item-flash"), 1200);
 }
@@ -606,11 +637,110 @@ function cssEscape(s) {
   return String(s).replace(/[^a-zA-Z0-9_-]/g, "\\$&");
 }
 
+// Externe POI-Texte sind nicht das bereits gerenderte ODAS-Konfigurations-Markdown.
+// Nur neu erzeugte erlaubte Knoten verlassen das inerte Template.
+function preparePoiDescription(value) {
+  const source = document.createElement("template");
+  source.innerHTML = String(value || "");
+  const clean = document.createElement("div");
+  const allowed = new Set(["p", "br", "ul", "ol", "li", "strong", "b", "em", "i", "a"]);
+  const blocked = new Set(["script", "style", "svg", "math", "iframe", "object", "embed", "img", "video", "audio", "source", "track", "template", "link", "meta", "base"]);
+  function appendSafe(node, parent) {
+    if (node.nodeType === 3) {
+      parent.appendChild(document.createTextNode(node.textContent));
+      return;
+    }
+    if (node.nodeType !== 1) return;
+    const tag = node.localName.toLowerCase();
+    if (blocked.has(tag)) return;
+    let target = parent;
+    let href = "";
+    if (tag === "a") {
+      try {
+        const candidate = safeHttpUrl(node.getAttribute("href"));
+        if (candidate) href = new URL(candidate).href;
+      } catch (_error) { /* Ungueltige Verknuepfung bleibt lesbarer Text. */ }
+    }
+    if (allowed.has(tag) && (tag !== "a" || href)) {
+      target = document.createElement(tag);
+      if (tag === "a") {
+        target.setAttribute("href", href);
+        target.setAttribute("target", "_blank");
+        target.setAttribute("rel", "noopener noreferrer");
+      }
+      parent.appendChild(target);
+    }
+    node.childNodes.forEach((child) => appendSafe(child, target));
+  }
+  source.content.childNodes.forEach((node) => appendSafe(node, clean));
+  function readableText(node) {
+    if (node.nodeType === 3) return node.textContent;
+    if (node.localName === "br") return "\n";
+    const text = Array.from(node.childNodes, readableText).join("");
+    return ["p", "li", "ul", "ol"].includes(node.localName) ? text + "\n" : text;
+  }
+  return { html: clean.innerHTML, text: readableText(clean).replace(/\n{3,}/g, "\n\n").trim() };
+}
+
+function descriptionPreview(text, limit = 600) {
+  const chars = Array.from(text);
+  if (chars.length <= limit) return text;
+  let preview = chars.slice(0, limit).join("");
+  if (!/\s/.test(chars[limit])) {
+    const boundary = preview.search(/\s+\S*$/);
+    if (boundary > 0) preview = preview.slice(0, boundary);
+  }
+  return preview.trimEnd() + "…";
+}
+
+function bindDescriptionControls(detailElement) {
+  const button = detailElement.querySelector(".oda-description-toggle");
+  if (!button) return;
+  const full = detailElement.querySelector(".oda-description-full");
+  const preview = detailElement.querySelector(".oda-description-preview");
+  button.addEventListener("click", () => {
+    const expanded = full.hidden;
+    full.hidden = !expanded;
+    preview.hidden = expanded;
+    button.setAttribute("aria-expanded", String(expanded));
+    button.textContent = expanded ? "Weniger anzeigen" : "Mehr lesen";
+  });
+}
+
+function contactValue(value, type) {
+  const text = String(value || "").trim();
+  if (type === "tel") {
+    if (!/^\+?[\d\s().-]+$/.test(text)) return "";
+    const number = text.replace(/[\s().-]/g, "");
+    return /^\+?\d{3,}$/.test(number) ? number : "";
+  }
+  if (!/^[a-z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-z0-9.-]+\.[a-z]{2,}$/i.test(text)) return "";
+  const [local, domain] = text.split("@");
+  return encodeURIComponent(local) + "@" + domain;
+}
+
+function formatAmenity(a) {
+  const labels = {
+    characteristics_familyfriendly: "Familienfreundlich",
+    "characteristics_non-smoking": "Nichtraucher",
+    characteristics_nonsmoking: "Nichtraucher",
+    characteristics_petfriendly: "Haustierfreundlich",
+    furnishing_wifi: "WLAN",
+  };
+  const name = String(a.name || "");
+  const known = Object.prototype.hasOwnProperty.call(labels, name);
+  const label = known ? labels[name] : name;
+  if (a.value == null || (known && a.value === true)) return label;
+  return label + ": " + (known && a.value === false ? "Nein" : String(a.value));
+}
+
 function detailHtml(state, p) {
   const name = localizedText(p.name, state.activeLang) || "(ohne Name)";
   const type = p["@type"] || "Place";
-  const desc = localizedText(p.description, state.activeLang);
-  const short = localizedText(p.disambiguatingDescription, state.activeLang);
+  const desc = preparePoiDescription(localizedText(p.description, state.activeLang));
+  const short = preparePoiDescription(localizedText(p.disambiguatingDescription, state.activeLang));
+  const longDescription = Array.from(desc.text).length > 600;
+  const descriptionId = `oda-description-${state.uid}-${state.allPois.indexOf(p)}`;
   const addr = p.address || {};
   const geo = p.geo || {};
   const images = Array.isArray(p.image) ? p.image : p.image ? [p.image] : [];
@@ -621,6 +751,8 @@ function detailHtml(state, p) {
   const url = addr.url || "";
   const u = safeHttpUrl(url);
   const email = addr.email || "";
+  const telValue = contactValue(tel, "tel");
+  const emailValue = contactValue(email, "mailto");
   const amenity = Array.isArray(p.amenityFeature) ? p.amenityFeature : [];
   const modified = p.dateModified || "";
 
@@ -661,12 +793,16 @@ function detailHtml(state, p) {
         ${langBadges}
       </div>
       <h2 class="oda-detail-title">${escapeHtml(name)}</h2>
-      ${short ? `<p class="oda-detail-short">${escapeHtml(short)}</p>` : ""}
+      ${short.text ? `<div class="oda-detail-short">${short.html}</div>` : ""}
     </div>
 
     ${galleryHtml}
 
-    ${desc ? `<div class="oda-detail-desc">${escapeHtml(desc)}</div>` : ""}
+    ${desc.text ? `<div class="oda-detail-desc">
+      ${longDescription ? `<div class="oda-description-preview">${escapeHtml(descriptionPreview(desc.text))}</div>` : ""}
+      <div class="oda-description-full" id="${descriptionId}" ${longDescription ? "hidden" : ""}>${desc.html}</div>
+      ${longDescription ? `<button type="button" class="oda-description-toggle" aria-expanded="false" aria-controls="${descriptionId}">Mehr lesen</button>` : ""}
+    </div>` : ""}
 
     <div class="oda-detail-grid">
       <div class="oda-detail-section">
@@ -679,8 +815,8 @@ function detailHtml(state, p) {
           ${(addr.postalCode || addr.addressLocality) ? `<div>${addr.postalCode ? escapeHtml(addr.postalCode) + " " : ""}${addr.addressLocality ? escapeHtml(addr.addressLocality) : ""}</div>` : ""}
           ${addr.addressCountry && addr.addressCountry.name ? `<div>${escapeHtml(addr.addressCountry.name.toUpperCase())}</div>` : ""}
         </div>
-        ${tel ? `<div>${escapeHtml(tel)}</div>` : ""}
-        ${email ? `<div>${escapeHtml(email)}</div>` : ""}
+        ${tel ? `<div class="oda-detail-contact">${telValue ? `<a href="tel:${escapeAttr(telValue)}">${escapeHtml(tel)}</a>` : escapeHtml(tel)}</div>` : ""}
+        ${email ? `<div class="oda-detail-contact">${emailValue ? `<a href="mailto:${escapeAttr(emailValue)}">${escapeHtml(email)}</a>` : escapeHtml(email)}</div>` : ""}
         ${u ? `<a href="${escapeAttr(u)}" target="_blank" rel="noopener" class="oda-contact-link">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
           ${escapeHtml(u.replace(/^https?:\/\//, ""))}
@@ -709,7 +845,7 @@ function detailHtml(state, p) {
           Ausstattung
         </h3>
         <div class="oda-amenity-list">
-          ${amenity.map((a) => `<span class="oda-amenity-tag">${escapeHtml(a.name || "")}${a.value != null ? `: ${escapeHtml(String(a.value))}` : ""}</span>`).join("")}
+          ${amenity.map((a) => `<span class="oda-amenity-tag">${escapeHtml(formatAmenity(a))}</span>`).join("")}
         </div>
       </div>` : ""}
 
@@ -726,19 +862,19 @@ function detailHtml(state, p) {
       </div>
     </div>
 
-    <details class="oda-jsonld-accordion" id="oda-jsonld-accordion">
+    <details class="oda-jsonld-accordion">
       <summary class="oda-jsonld-summary">
         <svg class="oda-jsonld-chevron" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
         <span class="oda-jsonld-label">ODTA-JSON-LD</span>
-        <span class="oda-jsonld-hint">konformer Datenexport</span>
+        <span class="oda-jsonld-hint">strukturierter Datenexport</span>
       </summary>
       <div class="oda-jsonld-body">
         <div class="oda-jsonld-actions">
-          <button type="button" id="oda-jsonld-copy" class="oda-icon-btn" title="In Zwischenablage kopieren">
+          <button type="button" data-action="jsonld-copy" class="oda-icon-btn" title="In Zwischenablage kopieren">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
             <span>Kopieren</span>
           </button>
-          <button type="button" id="oda-jsonld-download" class="oda-icon-btn" title="Als .jsonld-Datei herunterladen">
+          <button type="button" data-action="jsonld-download" class="oda-icon-btn" title="Als .jsonld-Datei herunterladen">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
             <span>Download</span>
           </button>
@@ -762,8 +898,8 @@ function typeIconSvg(type) {
   return `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`;
 }
 
-function bindDetailControls(state, p) {
-  const accordion = state.root.querySelector("#oda-jsonld-accordion");
+function bindDetailControls(state, p, detailElement) {
+  const accordion = detailElement.querySelector(".oda-jsonld-accordion");
   const codeEl = accordion ? accordion.querySelector("code") : null;
   if (accordion && codeEl) {
     accordion.addEventListener("toggle", () => {
@@ -773,7 +909,7 @@ function bindDetailControls(state, p) {
     });
   }
 
-  const copy = state.root.querySelector("#oda-jsonld-copy");
+  const copy = detailElement.querySelector('[data-action="jsonld-copy"]');
   if (copy) {
     copy.addEventListener("click", async () => {
       try {
@@ -792,7 +928,7 @@ function bindDetailControls(state, p) {
       }
     });
   }
-  const dl = state.root.querySelector("#oda-jsonld-download");
+  const dl = detailElement.querySelector('[data-action="jsonld-download"]');
   if (dl) {
     dl.addEventListener("click", () => {
       const blob = new Blob([JSON.stringify(toOdtaJsonLd(p), null, 2)], { type: "application/ld+json" });
@@ -819,6 +955,15 @@ function bindGallery(el) {
   });
 }
 
+function toOdtaLanguageValues(value) {
+  if (typeof value === "string") return value.trim() ? value : undefined;
+  if (!value || typeof value !== "object") return undefined;
+  const values = Object.entries(value)
+    .filter(([, text]) => typeof text === "string" && text.trim())
+    .map(([lang, text]) => ({ "@value": text, "@language": lang }));
+  return values.length ? values : undefined;
+}
+
 function toOdtaJsonLd(p) {
   const out = {
     "@context": { schema: "https://schema.org/", odta: "https://odta.io/voc/" },
@@ -830,9 +975,10 @@ function toOdtaJsonLd(p) {
   if (p.identifier) {
     out["@id"] = `${SOURCE_BASE}#${p.identifier}`;
   }
-  if (p.name) out["schema:name"] = p.name;
-  if (p.description) out["schema:description"] = p.description;
-  if (p.disambiguatingDescription) out["schema:disambiguatingDescription"] = p.disambiguatingDescription;
+  for (const field of ["name", "description", "disambiguatingDescription"]) {
+    const value = toOdtaLanguageValues(p[field]);
+    if (value !== undefined) out["schema:" + field] = value;
+  }
 
   if (p.address) {
     const a = p.address;
@@ -887,12 +1033,22 @@ function toOdtaJsonLd(p) {
   }
 
   if (p.license) {
-    out["sdLicense"] = LICENSE_URLS[p.license] || p.license;
+    out["schema:sdLicense"] = LICENSE_URLS[p.license] || p.license;
   }
-  out["sdPublisher"] = ODAS_PUBLISHER;
-  if (p.dateModified) out["sdDatePublished"] = p.dateModified.split("T")[0];
+  out["schema:sdPublisher"] = ODAS_PUBLISHER;
+  if (p.dateModified) out["schema:dateModified"] = p.dateModified;
 
   return out;
+}
+
+function schale4Panel(state, key, title, content) {
+  const id = `oda-${key}-${state.uid}`;
+  return `<section class="oda-schale4-card">
+    <h2><button type="button" class="oda-schale4-toggle" data-bs-toggle="collapse" data-bs-target="#${id}" aria-expanded="false" aria-controls="${id}">
+      ${escapeHtml(title)}<span class="oda-schale4-chevron" aria-hidden="true">▾</span>
+    </button></h2>
+    <div class="collapse" id="${id}"><div class="oda-schale4-content">${content}</div></div>
+  </section>`;
 }
 
 function renderSchale4Blocks(state) {
@@ -910,7 +1066,7 @@ function renderSchale4Blocks(state) {
 
   let topHtml = "";
   if (methodik) {
-    topHtml += `<div class="oda-schale4-card"><h2>Methodik &amp; Datenquelle</h2><div>${methodik}</div></div>`;
+    topHtml += schale4Panel(state, "methodik", "Methodik & Datenquelle", methodik);
   }
   if (freshness || datenStandText) {
     topHtml += `<div class="oda-freshness">Datenstand: ${freshness}${datenStandText ? " – " + escapeHtml(datenStandText) : ""}</div>`;
@@ -919,7 +1075,7 @@ function renderSchale4Blocks(state) {
 
   let bottomHtml = "";
   if (links) {
-    bottomHtml += `<div class="oda-schale4-card"><h2>Verwandte Links</h2><div>${links}</div></div>`;
+    bottomHtml += schale4Panel(state, "links", "Verwandte Links", links);
   }
   bottom.innerHTML = bottomHtml;
 }

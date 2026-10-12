@@ -1,7 +1,7 @@
 Die App **Ausflugsziele (ODTA – Tourist Attraction)** macht die touristischen Orte der Ostschweiz entdeckbar:
 Sehenswürdigkeiten, historische Gebäude, Naturattraktionen wie der Rheinfall, Berge, Gewässer und Touren
 werden auf einer interaktiven Karte, in einer filterbaren Liste und in einer Detailansicht präsentiert.
-Jeder Ort lässt sich zusätzlich als ODTA-konformer JSON-LD-Datensatz anzeigen, kopieren oder herunterladen.
+Jeder Ort lässt sich zusätzlich als strukturierter JSON-LD-Datensatz anzeigen, kopieren oder herunterladen.
 
 Die App ist für die Verwendung im [Open Data App Store](https://open-data-app-store.de/) gemacht
 und entspricht der [Open Data App](https://open-data-apps.github.io/open-data-app-docs/open-data-app-spezifikation/).
@@ -21,13 +21,14 @@ Die App ist eine Single Page Application (Webapp) mit:
 
 Die Konfiguration wird vom ODAS geladen. Die App zeigt folgende Inhalte:
 
-- **KPI-Kacheln**: Gesamte Orte, Ortstypen, Lizenzen, Sprachen – mit konfigurierbaren Kontexttexten
+- **KPI-Kacheln**: Gesamte Orte, Ortstypen, Lizenzen, Sprachen – mit konfigurierbaren, über Info-Schalter aufklappbaren Kontexttexten
 - **Volltextsuche und Filter**: Suche nach Name, Beschreibung, Adresse; Filter nach Typ, Sprache und Lizenz
 - **Listenansicht**: Clientseitiges Paging, Inline-Detailansicht pro Ort
-- **Interaktive Karte**: Leaflet.js mit OpenStreetMap-Kacheln, POI-Markern und Klick-Navigation zur Detailansicht
-- **Detailansicht**: Bildergalerie, mehrsprachige Beschreibung, Adresse, GPS, Kontakt, Ausstattungsmerkmale und Lizenzinformationen
-- **ODTA-konformer JSON-LD-Export**: Anzeigen, Kopieren und Herunterladen pro POI
-- **Schale-4-Komponenten**: Methodik-Kasten, Datenfrische-Indikator und verwandte Links – optional konfigurierbar
+- **Interaktive Karte**: Leaflet.js mit OpenStreetMap-Kacheln und POI-Markern; ein Klick öffnet den Ort auf der passenden Listenseite
+- **Detailansicht**: Bildergalerie, sicher formatierte Beschreibung, gut lesbare Adresse und Kontaktangaben mit Telefon-/E-Mail-Links, GPS, verständliche Ausstattungsmerkmale und Lizenzinformationen
+- **Lange Beschreibungen**: Ab mehr als 600 sichtbaren Unicode-Zeichen eine Vorschau mit „Mehr lesen“/„Weniger anzeigen“; kurze Texte vollständig
+- **JSON-LD-Export**: Anzeigen, Kopieren und Herunterladen pro POI, auch bei mehreren gleichzeitig geöffneten Orten; Sprachwerte und Quelländerungsdatum bleiben erhalten
+- **Zusatzinformationen**: Methodik und verwandte Links starten separat eingeklappt; Kennzahlen und kurzer Datenstand bleiben sichtbar
 
 ---
 
@@ -107,6 +108,10 @@ Der Inhaltsbereich wird in `app/app.js` erstellt. Dort sind Datenladen, CORS-Pro
 
 ![Screenshot 3](assets/Desktop_Screenshot_3.png)
 
+**Mobile Ansicht**
+
+![Mobile Ansicht](assets/Mobile_Screenshot.png)
+
 ### Wichtige Dateien
 | Datei | Beschreibung |
 | --- | --- |
@@ -119,7 +124,7 @@ Der Inhaltsbereich wird in `app/app.js` erstellt. Dort sind Datenladen, CORS-Pro
 ### Rich-Text-Format: Markdown vs. HTML
 
 Die Rich-Text-Felder (`beschreibung`, `kontakt`, `impressum`, `datenschutz`, `datenquelleHinweis`,
-`verwandteLinks`, `weiterfuehrendeLinks`) sind in `app-package.json` bewusst als **Markdown**
+`verwandteLinks`, `weiterfuehrendeLinks`, `kpiKontext1` bis `kpiKontext4`) sind in `app-package.json` bewusst als **Markdown**
 verfasst (`##`-Überschriften, `-`-Listen, `[Text](URL)`-Links). ODAS wandelt `format.typ:
 "markdown"`-Felder vor der Auslieferung an die App selbst in HTML um (siehe
 `open-data-app-spezifikation.md`, Abschnitt „Multiline und Rich Text").
@@ -129,6 +134,10 @@ simuliert damit die von ODAS bereits konvertierte Config, weil die lokale `app/a
 selbst keinen Markdown-Parser mitbringt und den Wert unverändert per `innerHTML` ausgibt. Beim
 Ändern eines Rich-Text-Felds müssen beide Dateien inhaltlich synchron gehalten werden, aber im
 jeweils passenden Format.
+
+Externe POI-Beschreibungen werden getrennt davon behandelt: Die App erzeugt aus einem inerten HTML-Template nur erlaubte Absatz-, Listen-, Hervorhebungs- und Linkelemente neu. Styles, Event-Attribute und eingebettete aktive Inhalte werden nicht übernommen; Beschreibungslinks müssen absolute HTTP(S)-URLs sein. Die Textvorschau verändert weder Quelldaten noch Export.
+
+Der JSON-LD-Export verwendet für mehrsprachige Texte explizite `@value`-/`@language`-Werte. Das Quelländerungsdatum heißt `schema:dateModified`; es wird nicht als Veröffentlichungsdatum des Exports ausgegeben. Die geprüfte Maschinenlesbarkeit dieser Felder ersetzt keine vollständige Zertifizierung gegen eine ODTA Domain Specification.
 
 ---
 
@@ -148,9 +157,10 @@ Folgende Parameter werden bei der App-Instanzierung im ODAS konfiguriert:
 | `kpiKontext2` | KPI-Kontexttext: Ortstypen | nein |
 | `kpiKontext3` | KPI-Kontexttext: Lizenzen | nein |
 | `kpiKontext4` | KPI-Kontexttext: Sprachen | nein |
-| `datenquelleHinweis` | Methodik-Kasten (Markdown) | nein |
+| `datenquelleHinweis` | Aufklappbarer Methodik-Kasten (Markdown) | nein |
 | `datenStand` | Zusätzlicher Text zum Datenstand | nein |
-| `verwandteLinks` | Verwandte Links (Markdown) | nein |
+| `verwandteLinks` | Aufklappbare verwandte Links (Markdown), Fallback | nein |
+| `weiterfuehrendeLinks` | Aufklappbare weiterführende Links (Markdown), hat Vorrang vor `verwandteLinks` | nein |
 
 ### Andere Datensätze verwenden
 
