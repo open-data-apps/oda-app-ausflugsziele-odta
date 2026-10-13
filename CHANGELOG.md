@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.30.1 - 2026-10-13
+- FIX: Standard-Fehleranzeige gibt präzisere Tipps: ein „Failed to fetch“ ohne Proxy-Kontext erhält einen Netzwerk-Hinweis statt `proxyAktiv`; der 404-Hinweis gilt nur noch für echte HTTP-404-Antworten und nennt den lokal fehlenden Proxy/Relay statt pauschal „Datensatz auf dem Portal nicht gefunden“.
+
 ## 1.30.0 - 2026-10-12
 - FIX: Exportaktionen sind dem jeweiligen geöffneten Ort zugeordnet; mehrsprachige JSON-LD-Werte und Metadaten bleiben maschinenlesbar erhalten, das Quelländerungsdatum wird korrekt benannt.
 - FIX: HTML-Beschreibungen sicher aufbereitet; Absätze, Listen, Hervorhebungen und HTTP(S)-Links bleiben lesbar, aktive Inhalte werden verworfen.
