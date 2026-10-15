@@ -96,21 +96,23 @@ Der Inhaltsbereich wird in `app/app.js` erstellt. Dort sind Datenladen, CORS-Pro
 
 #### Screenshots
 
-**Startseite mit Karte und Filterleiste**
+**Startseite mit Karte und Trefferliste**
 
-![Screenshot 1](assets/Desktop_Screenshot_1.png)
+![Screenshot 1](assets/Desktop_Screenshot.png)
 
-**Detailansicht eines POI**
+**Gefilterte Trefferliste**
 
 ![Screenshot 2](assets/Desktop_Screenshot_2.png)
 
-**JSON-LD-Export und Schale-4-Bereich**
+**Detailansicht eines POI**
 
 ![Screenshot 3](assets/Desktop_Screenshot_3.png)
 
 **Mobile Ansicht**
 
 ![Mobile Ansicht](assets/Mobile_Screenshot.png)
+![Mobile Ansicht – Filter](assets/Mobile_Screenshot_2.png)
+![Mobile Ansicht – Detail](assets/Mobile_Screenshot_3.png)
 
 ### Wichtige Dateien
 | Datei | Beschreibung |
