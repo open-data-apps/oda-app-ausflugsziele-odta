@@ -130,15 +130,6 @@
       }
     },
     {
-      "name": "geo.altitude",
-      "title": "Höhe",
-      "type": "number",
-      "description": "Höhenangabe, falls geliefert.",
-      "constraints": {
-        "required": false
-      }
-    },
-    {
       "name": "image",
       "title": "Bilder",
       "type": "array",
@@ -186,7 +177,7 @@
     {
       "name": "openingHoursSpecification",
       "title": "Öffnungszeiten-Regeln",
-      "type": "object",
+      "type": "array",
       "description": "Strukturierte Öffnungszeiten, falls geliefert.",
       "constraints": {
         "required": false
