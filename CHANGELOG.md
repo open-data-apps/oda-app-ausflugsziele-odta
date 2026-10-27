@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.30.5 - 2026-10-27
+- DOCS: Store-Katalogtext ohne Instanz-Platzhalter: Links mit Platzhalterziel erscheinen dort als Text, weil die Katalogseite keine Instanz kennt und Platzhalter nicht auflöst (Live-Befund 27.10.2026). „Über diese App“ in der App bleibt unverändert.
+
 ## 1.30.4 - 2026-10-16
 - FIX: Schema: nie geliefertes Feld `geo.altitude` entfernt und `openingHoursSpecification` als Liste beschrieben; die Store-Datenprüfung meldete sonst Fehler.
 
